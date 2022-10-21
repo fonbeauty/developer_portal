@@ -1,5 +1,8 @@
 import pytest
+
 from selenium import webdriver
+from selenium.webdriver.chrome.webdriver import WebDriver
+from configs.load_data import get_config
 
 
 def pytest_addoption(parser):
@@ -16,8 +19,14 @@ def pytest_addoption(parser):
     )
 
 
+def pytest_sessionstart(session):
+    global CONFIG
+    CONFIG = get_config()
+    pass
+
+
 @pytest.fixture()
-def browser(request):
+def browser(request) -> WebDriver:
     selected_browser = request.config.getoption('--browser')
     headless = request.config.getoption('--headless')
 

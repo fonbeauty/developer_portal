@@ -1,0 +1,16 @@
+from dataclasses import dataclass
+
+
+@dataclass()
+class User:
+    login: str
+    password: str
+    description: str
+
+
+@dataclass
+class StandConfig:
+    base_url: str
+    implicit_wait_timeout: int
+    chromedriver_path: str
+    developer: User
