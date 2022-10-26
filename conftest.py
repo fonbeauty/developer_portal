@@ -9,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from configs.load_data import get_config
+from model.application_manager import ApplicationManager
 from model.components.main import Main
 from model.models import StandConfig
 from utils import file
@@ -59,8 +60,6 @@ def driver(request) -> WebDriver:
     elif selected_browser == 'safari':
         _driver = webdriver.Safari()
 
-    _driver.get(url=CONFIG.base_url)
-
     yield _driver
 
     _driver.close()
@@ -86,10 +85,12 @@ def driver_developer_cookie(driver: WebDriver) -> dict:
 
 
 @pytest.fixture(scope='function')
-def main_page(driver: WebDriver) -> Main:
-    main_page = Main(driver)
-    # main_page.driver.get(url=CONFIG.base_url)
-    return main_page
+def app(driver: WebDriver, driver_developer_cookie: dict) -> ApplicationManager:
+    _app = ApplicationManager(driver)
+    _app.main_page.driver.get(url='https://api.developer.sber.ru/')
+    _app.main_page.driver.add_cookie(driver_developer_cookie)
+    _app.main_page.driver.get(url='https://api.developer.sber.ru/')
+    return _app
 
 
 def wait_element(selector, driver: WebDriver, timeout=1, by=By.CSS_SELECTOR) -> WebElement:
