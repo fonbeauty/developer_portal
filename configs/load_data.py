@@ -22,7 +22,8 @@ def get_config() -> StandConfig:
         developer=User(
             login=ymlconfig["users"]["developer"]["login"],
             password=ymlconfig["users"]["developer"]["password"],
-            description=ymlconfig["users"]["developer"]["description"]
+            description=ymlconfig["users"]["developer"]["description"],
+            session=ymlconfig["users"]["developer"]["session"]
         )
     )
     return stand_config

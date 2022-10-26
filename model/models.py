@@ -6,6 +6,7 @@ class User:
     login: str
     password: str
     description: str
+    session: str
 
 
 @dataclass
