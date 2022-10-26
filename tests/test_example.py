@@ -29,29 +29,32 @@ from conftest import CONFIG
 #     time.sleep(10)
 
 
-def test_open_base_page(driver: WebDriver, driver_developer_cookie: dict):
-    driver.get(url=CONFIG.base_url)
-    driver.add_cookie(driver_developer_cookie)
-    driver.get(url='https://api.developer.sber.ru/profile/17124919-4b8c-444d-a9d9-a062ec95bd38')
+# def test_open_base_page(driver: WebDriver, driver_developer_cookie: dict):
+#     driver.get(url=CONFIG.base_url)
+#     driver.add_cookie(driver_developer_cookie)
+#     driver.get(url='https://api.developer.sber.ru/profile/17124919-4b8c-444d-a9d9-a062ec95bd38')
+#     time.sleep(2)
+from model.components.main import Main
+
+
+def test_open_main_page(main_page: Main, driver_developer_cookie: dict):
+    # driver.get(url=CONFIG.base_url)
+    main_page.driver.add_cookie(driver_developer_cookie)
+    main_page.driver.get(url='https://api.developer.sber.ru/')
+    element = main_page.check_email()
+
     time.sleep(2)
 
 
-def test_open_base_page2(driver: WebDriver, driver_developer_cookie: dict):
-    driver.get(url=CONFIG.base_url)
-    driver.add_cookie(driver_developer_cookie)
-    driver.get(url='https://api.developer.sber.ru/')
-    time.sleep(2)
-
-
-def test_open_base_page3(driver: WebDriver, driver_developer_cookie: dict):
-    driver.get(url=CONFIG.base_url)
-    driver.add_cookie(driver_developer_cookie)
-    driver.get(url='https://api.developer.sber.ru/profile/view')
-    time.sleep(2)
-
-
-def test_open_base_page4(driver: WebDriver, driver_developer_cookie: dict):
-    driver.get(url=CONFIG.base_url)
-    driver.add_cookie(driver_developer_cookie)
-    driver.get(url='https://api.developer.sber.ru/catalog')
-    time.sleep(2)
+# def test_open_base_page3(driver: WebDriver, driver_developer_cookie: dict):
+#     driver.get(url=CONFIG.base_url)
+#     driver.add_cookie(driver_developer_cookie)
+#     driver.get(url='https://api.developer.sber.ru/profile/view')
+#     time.sleep(2)
+#
+#
+# def test_open_base_page4(driver: WebDriver, driver_developer_cookie: dict):
+#     driver.get(url=CONFIG.base_url)
+#     driver.add_cookie(driver_developer_cookie)
+#     driver.get(url='https://api.developer.sber.ru/catalog')
+#     time.sleep(2)

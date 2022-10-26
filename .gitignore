@@ -131,3 +131,4 @@ dmypy.json
 .idea/
 chromedriver
 /configs/config.yml
+tests/cookie.txt

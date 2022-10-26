@@ -9,7 +9,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
 from configs.load_data import get_config
+from model.components.main import Main
 from model.models import StandConfig
+from utils import file
 
 CONFIG: StandConfig
 DEVELOPER_COOKIE: dict
@@ -56,6 +58,9 @@ def driver(request) -> WebDriver:
         options.page_load_strategy = 'none'
     elif selected_browser == 'safari':
         _driver = webdriver.Safari()
+
+    _driver.get(url=CONFIG.base_url)
+
     yield _driver
 
     _driver.close()
@@ -64,8 +69,8 @@ def driver(request) -> WebDriver:
 @pytest.fixture(scope='function')
 def driver_developer_cookie(driver: WebDriver) -> dict:
     global DEVELOPER_COOKIE
-    # print(DEVELOPER_COOKIE)
-    if DEVELOPER_COOKIE is None:
+    DEVELOPER_COOKIE = file.cookie_read()
+    if DEVELOPER_COOKIE is None or file.cookie_expired():
         developer = CONFIG.developer
         driver.get(url=CONFIG.base_url)
         wait_element(selector='#edit-openid-connect-client-keycloak-login', driver=driver).click()
@@ -74,33 +79,17 @@ def driver_developer_cookie(driver: WebDriver) -> dict:
         wait_element(selector='#password', driver=driver).send_keys(developer.password)
         wait_element(selector='#kc-login', driver=driver).click()
         DEVELOPER_COOKIE = driver.get_cookie(developer.session)
+        file.cookie_write(DEVELOPER_COOKIE)
         return DEVELOPER_COOKIE
     else:
         return DEVELOPER_COOKIE
 
 
-
-
-
-# @pytest.fixture(scope='session')
-# def developer_login(driver) -> dict:
-#     developer = CONFIG.developer
-#     driver.get(url=CONFIG.base_url)
-#     wait_element(selector='#edit-openid-connect-client-keycloak-login', driver=driver).click()
-#     # time.sleep(3)
-#     wait_element(selector='#username', driver=driver).send_keys(developer.login)
-#     wait_element(selector='#password', driver=driver).send_keys(developer.password)
-#     wait_element(selector='#kc-login', driver=driver).click()
-#     return driver.get_cookie(developer.session)
-
-
-#
-# def test_ololo():
-#     print(__name__)
-
-
-if __name__ == '__main__':
-    print(__name__)
+@pytest.fixture(scope='function')
+def main_page(driver: WebDriver) -> Main:
+    main_page = Main(driver)
+    # main_page.driver.get(url=CONFIG.base_url)
+    return main_page
 
 
 def wait_element(selector, driver: WebDriver, timeout=1, by=By.CSS_SELECTOR) -> WebElement:
@@ -108,5 +97,9 @@ def wait_element(selector, driver: WebDriver, timeout=1, by=By.CSS_SELECTOR) -> 
         lolo = WebDriverWait(driver, timeout).until(EC.visibility_of_element_located((by, selector)))
         return lolo
     except TimeoutException:
-        driver.save_screenshot(f'{driver.session_id}.png')
+        # driver.save_screenshot(f'{driver.session_id}.png')
         raise AssertionError(f'Не дождался видимости элемента {selector}')
+
+
+if __name__ == '__main__':
+    print(__name__)
