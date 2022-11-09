@@ -1,9 +1,5 @@
-from selenium.common import TimeoutException
 from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 from model.components.base_driver import BaseDriver
 
@@ -24,3 +20,6 @@ class Main(BaseDriver):
 
     def catalog_link_click(self) -> None:
         self.catalog_link().click()
+
+    def open_catalog(self) -> None:
+        self.catalog_link_click()

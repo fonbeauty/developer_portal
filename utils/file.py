@@ -1,6 +1,6 @@
 import json
+
 from datetime import datetime
-from datetime import timedelta
 
 
 def cookie_write(cookie: dict):
@@ -18,13 +18,13 @@ def cookie_read() -> dict:
         return None
 
 
-def cookie_expired() -> bool:
+def cookie_expired(expire_time: int) -> bool:
     creation_time_string = (cookie_read().get('creation_time'))
     format_datetime = "%Y-%m-%d %H:%M:%S.%f"
     creation_time = datetime.strptime(creation_time_string, format_datetime)
     current_time = datetime.now()
 
-    if (current_time - creation_time).seconds <= 900:
+    if (current_time - creation_time).seconds <= expire_time:
         return False
     else:
         return True

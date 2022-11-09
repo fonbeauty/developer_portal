@@ -10,7 +10,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from configs.load_data import get_config
 from model.application_manager import ApplicationManager
-from model.components.main import Main
 from model.models import StandConfig
 from utils import file
 
@@ -69,7 +68,7 @@ def driver(request) -> WebDriver:
 def driver_developer_cookie(driver: WebDriver) -> dict:
     global DEVELOPER_COOKIE
     DEVELOPER_COOKIE = file.cookie_read()
-    if DEVELOPER_COOKIE is None or file.cookie_expired():
+    if DEVELOPER_COOKIE is None or file.cookie_expired(CONFIG.cookie_expire):
         developer = CONFIG.developer
         driver.get(url=CONFIG.base_url)
         wait_element(selector='#edit-openid-connect-client-keycloak-login', driver=driver).click()

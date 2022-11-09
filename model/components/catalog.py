@@ -12,7 +12,7 @@ class Catalog(BaseDriver):
     def catalog_title(self) -> WebElement:
         return self.wait_element('.catalog__title')
 
-    def catalog_title_text(self) -> str:
+    def title_text(self) -> str:
         return self.catalog_title().text
 
     def search_input(self) -> WebElement:
@@ -21,4 +21,19 @@ class Catalog(BaseDriver):
     def search_input_type_text(self, text_for_search: str) -> None:
         self.search_input().send_keys(text_for_search)
         self.search_input().submit()
+
+    def card_rates(self) -> WebElement:
+        return self.wait_element('a[href="/product/ExchangeRates"]')
+
+    def all_cards(self) -> list:
+        return self.wait_elements('.card')
+
+    def count_cards(self) -> int:
+        return len(self.all_cards())
+
+
+
+
+
+
 

@@ -13,5 +13,6 @@ class User:
 class StandConfig:
     base_url: str
     implicit_wait_timeout: int
+    cookie_expire: int
     chromedriver_path: str
     developer: User

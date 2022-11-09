@@ -18,6 +18,7 @@ def get_config() -> StandConfig:
     stand_config = StandConfig(
         base_url=f'{ymlconfig["urls"]["base_url"]}',
         implicit_wait_timeout=int(f'{ymlconfig["timeouts"]["implicit_timeout"]}'),
+        cookie_expire=int(f'{ymlconfig["timeouts"]["cookie_expire"]}'),
         chromedriver_path=f'{ymlconfig["paths"]["chromedriver_path"]}',
         developer=User(
             login=ymlconfig["users"]["developer"]["login"],
