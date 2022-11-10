@@ -7,7 +7,7 @@ def test_open_main_page(app: ApplicationManager):
     assert app.main_page.profile_link_text() == 'forportal1@mail.ru', 'Ссылка профиля не найдена'
 
 
-def test_go_to_catalog(app: ApplicationManager):
+def test_open_catalog(app: ApplicationManager):
 
     app.main_page.open_catalog()
 
@@ -20,7 +20,14 @@ def test_go_to_catalog(app: ApplicationManager):
 def test_search_services(app: ApplicationManager):
 
     app.main_page.open_catalog()
-    app.catalog.search_input_type_text('курсы валют')
+    app.catalog.search_text('курсы валют')
 
-    # time.sleep(5)
+    assert app.catalog.count_cards() == 1, 'Найдено более одной карточки продуктов'
+    assert app.catalog.card_rates(), 'Не найдено карточки продукта Курсы валют'
+    pass
+
+
+
+
+
 

@@ -23,7 +23,7 @@ class Catalog(BaseDriver):
     def search_input(self) -> WebElement:
         return self.wait_element(self.SEARCH_INPUT)
 
-    def search_input_type_text(self, text_for_search: str) -> None:
+    def search_text(self, text_for_search: str) -> None:
         self.search_input().send_keys(text_for_search)
         self.search_input().submit()
 
