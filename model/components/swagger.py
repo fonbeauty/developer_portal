@@ -10,6 +10,7 @@ class Swagger(BaseDriver):
     SERVERS_SECTION = '.servers'
     OPERATION_SECTION = '.opblock-tag-section'
     SCHEMAS_SECTION = '.models-control'
+    DOWNLOAD_SWAGGER = '#edit-download'
 
     def __init__(self, driver: WebDriver):
         super().__init__(driver)
@@ -25,5 +26,11 @@ class Swagger(BaseDriver):
 
     def schemas_section(self) -> WebElement:
         return self.wait_element(self.SCHEMAS_SECTION)
+
+    def _download_swagger_button(self) -> WebElement:
+        return self.wait_element(self.DOWNLOAD_SWAGGER)
+
+    def download_swagger(self) -> None:
+        self._download_swagger_button().click()
 
 

@@ -13,7 +13,7 @@ def test_open_catalog(app: ApplicationManager):
 
     assert app.catalog.current_url() == f'{CONFIG.base_url}/catalog'
     assert app.catalog.title_text() == 'Каталог сервисов'
-    assert app.catalog.count_cards() <= 16, 'Не все картоки продуктов отобразились в каталоге'
+    assert app.catalog.count_cards() >= 16, 'Не все картоки продуктов отобразились в каталоге'
     pass
 
 
@@ -39,6 +39,7 @@ def test_open_product(app: ApplicationManager):
     assert app.product.product_title().text == product_title, 'Не найдена элемент описания сервиса'
     assert app.product.section_card(), 'Не найден элемент с условиями сервиса'
 
+
 def test_open_swagger(app: ApplicationManager):
 
     app.main_page.open_catalog()
@@ -52,6 +53,25 @@ def test_open_swagger(app: ApplicationManager):
     assert app.swagger.servers_section()
     assert app.swagger.opertion_section()
     assert app.swagger.schemas_section()
+
+
+def test_download_swagger(app: ApplicationManager):
+
+    app.main_page.open_catalog()
+    product = app.catalog.random_product_card()
+    app.catalog.go_to_product(product)
+    app.product.go_to_token_swagger()
+    app.swagger.download_swagger()
+
+    pass
+
+    assert app.swagger.title_section()
+    assert app.swagger.servers_section()
+    assert app.swagger.opertion_section()
+    assert app.swagger.schemas_section()
+
+
+
 
 
 
