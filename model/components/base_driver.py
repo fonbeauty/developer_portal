@@ -14,12 +14,17 @@ class BaseDriver:
         try:
             return WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((by, selector)))
         except TimeoutException:
+            pass
             # self.driver.save_screenshot(f'{self.driver.session_id}.png')
-            raise AssertionError(f'Не дождался видимости элемента {selector}')
+            # raise AssertionError(f'Не дождался видимости элемента {selector}')
 
     def wait_elements(self, selector, timeout=1, by=By.CSS_SELECTOR) -> list:
         try:
             return WebDriverWait(self.driver, timeout).until(EC.visibility_of_all_elements_located((by, selector)))
         except TimeoutException:
+            pass
             # self.driver.save_screenshot(f'{self.driver.session_id}.png')
-            raise AssertionError(f'Не дождался видимости элемента {selector}')
+            # raise AssertionError(f'Не дождался видимости элемента {selector}')
+
+    def current_url(self) -> str:
+        return self.driver.current_url
