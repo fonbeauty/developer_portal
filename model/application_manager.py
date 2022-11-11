@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from model.components.catalog import Catalog
 from model.components.main import Main
 from model.components.product import Product
+from model.components.swagger import Swagger
 
 
 class ApplicationManager:
@@ -12,3 +13,4 @@ class ApplicationManager:
         self.main_page = Main(driver)
         self.catalog = Catalog(driver)
         self.product = Product(driver)
+        self.swagger = Swagger(driver)

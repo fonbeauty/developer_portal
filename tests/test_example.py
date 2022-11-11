@@ -31,16 +31,27 @@ def test_open_product(app: ApplicationManager):
 
     app.main_page.open_catalog()
     product = app.catalog.random_product_card()
-    product_href = app.catalog.product_href(product)
     product_title = app.catalog.product_title(product)
     app.catalog.go_to_product(product)
 
     pass
 
-    assert app.product.current_url() == product_href, 'URL не совпадает с заданным'
     assert app.product.product_title().text == product_title, 'Не найдена элемент описания сервиса'
     assert app.product.section_card(), 'Не найден элемент с условиями сервиса'
 
+def test_open_swagger(app: ApplicationManager):
+
+    app.main_page.open_catalog()
+    product = app.catalog.random_product_card()
+    app.catalog.go_to_product(product)
+    app.product.go_to_token_swagger()
+
+    pass
+
+    assert app.swagger.title_section()
+    assert app.swagger.servers_section()
+    assert app.swagger.opertion_section()
+    assert app.swagger.schemas_section()
 
 
 
