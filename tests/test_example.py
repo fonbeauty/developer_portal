@@ -20,6 +20,7 @@ def test_open_catalog(app: ApplicationManager):
 def test_search_services(app: ApplicationManager):
 
     app.main_page.open_catalog()
+
     app.catalog.search_text('курсы валют')
 
     assert app.catalog.count_cards() == 1, 'Найдено более одной карточки продуктов'

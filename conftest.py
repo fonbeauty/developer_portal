@@ -12,7 +12,7 @@ from configs.load_data import get_config
 from model.application_manager import ApplicationManager
 from model.models import StandConfig
 from utils import file
-from utils.file import path_forresources
+from utils.file import path_for_resources
 
 CONFIG: StandConfig
 DEVELOPER_COOKIE: dict
@@ -53,10 +53,10 @@ def driver(request) -> WebDriver:
         if headless:
             options.headless = True
         options.page_load_strategy = 'normal'
-        prefs = {'download.default_directory': path_forresources()}
+        prefs = {'download.default_directory': path_for_resources()}
         options.add_experimental_option("prefs", prefs)
         _driver = webdriver.Chrome(
-            executable_path='/Users/18980620/.wdm/drivers/chromedriver/mac64/98.0.4758.102/chromedriver',
+            executable_path='/Users/18980620/.wdm/drivers/chromedriver/mac64/104.0.5112.79/chromedriver',
             options=options
         )
     elif selected_browser == 'safari':

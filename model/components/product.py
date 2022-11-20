@@ -10,7 +10,6 @@ class Product(BaseDriver):
     PRODUCT_TITLE = '.offer__title'
     SECTION_CARD = '.section-card'
     TOKEN_HREF = 'a[href="https://api.developer.sber.ru/swagger/download_token_3_0_0"]'
-    
 
     def __init__(self, driver: WebDriver):
         super().__init__(driver)
@@ -29,7 +28,5 @@ class Product(BaseDriver):
 
     def go_to_token_swagger(self) -> None:
         self.token_href().click()
-
-
 
 

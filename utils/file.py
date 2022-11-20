@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 
-def path_forresources(file_name='') -> str:
+def path_for_resources(file_name='') -> str:
     path = str(Path(__file__).parent.parent.joinpath('resources').joinpath(file_name))
     return path
 
