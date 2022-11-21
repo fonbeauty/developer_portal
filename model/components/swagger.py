@@ -21,7 +21,7 @@ class Swagger(BaseDriver):
     def servers_section(self) -> WebElement:
         return self.wait_element(self.SERVERS_SECTION)
 
-    def opertion_section(self) -> WebElement:
+    def operation_section(self) -> WebElement:
         return self.wait_element(self.OPERATION_SECTION)
 
     def schemas_section(self) -> WebElement:

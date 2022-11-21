@@ -52,7 +52,7 @@ def test_open_swagger(app: ApplicationManager):
 
     assert app.swagger.title_section()
     assert app.swagger.servers_section()
-    assert app.swagger.opertion_section()
+    assert app.swagger.operation_section()
     assert app.swagger.schemas_section()
 
 
@@ -68,7 +68,7 @@ def test_download_swagger(app: ApplicationManager):
 
     assert app.swagger.title_section()
     assert app.swagger.servers_section()
-    assert app.swagger.opertion_section()
+    assert app.swagger.operation_section()
     assert app.swagger.schemas_section()
 
 
