@@ -8,7 +8,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
-from configs.load_data import get_config
+from utils.load_config_data import get_config
 from model.application_manager import ApplicationManager
 from model.models import StandConfig
 from utils import file
@@ -30,11 +30,17 @@ def pytest_addoption(parser):
         action='store_true',
         help='if --headless, chrome start in headless mode',
     )
+    parser.addoption(
+        '--stand',
+        help='stand to run tests'
+    )
+    pass
 
 
-def pytest_sessionstart(session):
+def pytest_sessionstart(session: pytest.Session):
     global CONFIG
-    CONFIG = get_config()
+    stand = session.config.getoption('--stand')
+    CONFIG = get_config(stand)
     global DEVELOPER_COOKIE
     DEVELOPER_COOKIE = None
     pass

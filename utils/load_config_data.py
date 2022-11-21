@@ -13,8 +13,8 @@ def load_yml_data(path: str) -> dict:
             raise exc
 
 
-def get_config() -> StandConfig:
-    ymlconfig = load_yml_data(f'{str(Path(__file__).parent)}/config.yml')
+def get_config(stand: str) -> StandConfig:
+    ymlconfig = load_yml_data(f'{str(Path(__file__).parent.parent)}/configs/{stand}_config.yml')
     stand_config = StandConfig(
         base_url=f'{ymlconfig["urls"]["base_url"]}',
         implicit_wait_timeout=int(f'{ymlconfig["timeouts"]["implicit_timeout"]}'),
