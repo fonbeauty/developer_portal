@@ -16,3 +16,4 @@ class StandConfig:
     cookie_expire: int
     chromedriver_path: str
     developer: User
+    stand: str

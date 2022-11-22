@@ -75,10 +75,12 @@ def driver(request) -> WebDriver:
 
 
 @pytest.fixture(scope='function')
-def driver_developer_cookie(driver: WebDriver) -> dict:
+def driver_cookie(driver: WebDriver) -> dict:
+    stand = CONFIG.stand
+    user_session_id = CONFIG.developer.session
     global DEVELOPER_COOKIE
-    DEVELOPER_COOKIE = file.cookie_read()
-    if DEVELOPER_COOKIE is None or file.cookie_expired(CONFIG.cookie_expire):
+    DEVELOPER_COOKIE = file.cookie_read(stand, user_session_id)
+    if DEVELOPER_COOKIE is None or file.cookie_expired(stand, user_session_id, CONFIG.cookie_expire):
         developer = CONFIG.developer
         driver.get(url=CONFIG.base_url)
         wait_element(selector='#edit-openid-connect-client-keycloak-login', driver=driver).click()
@@ -86,19 +88,19 @@ def driver_developer_cookie(driver: WebDriver) -> dict:
         wait_element(selector='#username', driver=driver).send_keys(developer.login)
         wait_element(selector='#password', driver=driver).send_keys(developer.password)
         wait_element(selector='#kc-login', driver=driver).click()
-        DEVELOPER_COOKIE = driver.get_cookie(developer.session)
-        file.cookie_write(DEVELOPER_COOKIE)
+        DEVELOPER_COOKIE = driver.get_cookie(user_session_id)
+        file.cookie_write(stand, user_session_id, DEVELOPER_COOKIE)
         return DEVELOPER_COOKIE
     else:
         return DEVELOPER_COOKIE
 
 
 @pytest.fixture(scope='function')
-def app(driver: WebDriver, driver_developer_cookie: dict) -> ApplicationManager:
+def app(driver: WebDriver, driver_cookie) -> ApplicationManager:
     _app = ApplicationManager(driver)
-    _app.main_page.driver.get(url='https://api.developer.sber.ru/')
-    _app.main_page.driver.add_cookie(driver_developer_cookie)
-    _app.main_page.driver.get(url='https://api.developer.sber.ru/')
+    _app.main_page.driver.get(url=CONFIG.base_url)
+    _app.main_page.driver.add_cookie(driver_cookie)
+    _app.main_page.driver.get(url=CONFIG.base_url)
     return _app
 
 

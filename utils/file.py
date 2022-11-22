@@ -9,23 +9,28 @@ def path_for_resources(file_name='') -> str:
     return path
 
 
-def cookie_write(cookie: dict):
+def path_for_cookies(file_name='') -> str:
+    path = str(Path(path_for_resources('cookies')).joinpath(file_name))
+    return path
+
+
+def cookie_write(stand: str, user_session_id: str, cookie: dict):
     cookie['creation_time'] = str(datetime.now())
-    with open('cookie.txt', 'w') as file:
+    with open(path_for_cookies(f'{stand}_{user_session_id}.txt'), 'w') as file:
         json.dump(cookie, file)
 
 
-def cookie_read() -> dict:
+def cookie_read(stand: str, user_session_id: str) -> dict:
     try:
-        with open('cookie.txt', 'r') as json_file:
+        with open(path_for_cookies(f'{stand}_{user_session_id}.txt'), 'r') as json_file:
             data = json.load(json_file)
         return data
     except FileNotFoundError:
         return None
 
 
-def cookie_expired(expire_time: int) -> bool:
-    creation_time_string = (cookie_read().get('creation_time'))
+def cookie_expired(stand: str, user_session_id: str, expire_time: int) -> bool:
+    creation_time_string = (cookie_read(stand, user_session_id).get('creation_time'))
     format_datetime = "%Y-%m-%d %H:%M:%S.%f"
     creation_time = datetime.strptime(creation_time_string, format_datetime)
     current_time = datetime.now()
