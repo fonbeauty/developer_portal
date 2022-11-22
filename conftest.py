@@ -58,6 +58,7 @@ def driver(request) -> WebDriver:
         options = webdriver.ChromeOptions()
         if headless:
             options.headless = True
+        options.accept_insecure_certs = True
         options.page_load_strategy = 'normal'
         prefs = {'download.default_directory': path_for_resources()}
         options.add_experimental_option("prefs", prefs)
