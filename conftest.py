@@ -83,11 +83,16 @@ def driver_cookie(driver: WebDriver) -> dict:
     if DEVELOPER_COOKIE is None or file.cookie_expired(stand, user_session_id, CONFIG.cookie_expire):
         developer = CONFIG.developer
         driver.get(url=CONFIG.base_url)
+
         wait_element(selector='#edit-openid-connect-client-keycloak-login', driver=driver).click()
-        # time.sleep(3)
-        wait_element(selector='#username', driver=driver).send_keys(developer.login)
-        wait_element(selector='#password', driver=driver).send_keys(developer.password)
-        wait_element(selector='#kc-login', driver=driver).click()
+        if stand == 'dev':
+            wait_element(selector='label[for="edit-user-user1-3352-axvpnexamplesparta"].radioBtn-checkmark', driver=driver).click()
+            wait_element(selector='#edit-login', driver=driver).click()
+        else:
+            wait_element(selector='#username', driver=driver).send_keys(developer.login)
+            wait_element(selector='#password', driver=driver).send_keys(developer.password)
+            wait_element(selector='#kc-login', driver=driver).click()
+
         DEVELOPER_COOKIE = driver.get_cookie(user_session_id)
         file.cookie_write(stand, user_session_id, DEVELOPER_COOKIE)
         return DEVELOPER_COOKIE
