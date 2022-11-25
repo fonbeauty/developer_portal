@@ -14,6 +14,7 @@ class Catalog(BaseDriver):
     ALL_CARDS = '.card'
     GROUP_CARDS = '.catalog__cards'
     CARD_TITLE = '.card-title'
+    # PRODUCT_CODE = 'data-properties-product'
 
     def __init__(self, driver: WebDriver):
         super().__init__(driver)
@@ -27,7 +28,7 @@ class Catalog(BaseDriver):
     def search_input(self) -> WebElement:
         return self.wait_element(self.SEARCH_INPUT)
 
-    def search_text(self, text_for_search: str) -> None:
+    def search_product(self, text_for_search: str) -> None:
         self.search_input().send_keys(text_for_search)
         self.search_input().submit()
 
@@ -39,6 +40,12 @@ class Catalog(BaseDriver):
 
     def all_cards(self) -> list:
         return self.wait_elements(self.ALL_CARDS)
+
+    def count_elements(self, elements: list) -> int:
+        return len(elements)
+
+    def get_card_href(self, card: WebElement) -> str:
+        return card.get_attribute('href')
 
     def count_cards(self) -> int:
         return len(self.all_cards())
@@ -57,6 +64,12 @@ class Catalog(BaseDriver):
 
     def go_to_product(self, product: WebElement) -> None:
         product.click()
+
+    # def product_code(self, product: WebElement) -> str:
+    #     return product.get_attribute('data-properties-product')
+    #
+    # def card(self, product: WebElement, product_code: str):
+    #     return self.wait_element()
 
 
 

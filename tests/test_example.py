@@ -2,9 +2,8 @@ from conftest import CONFIG
 from model.application_manager import ApplicationManager
 
 
-def test_open_main_page(app: ApplicationManager):
-
-    assert app.main_page.profile_link_text() == 'forportal1@mail.ru', 'Ссылка профиля не найдена'
+# def test_open_main_page(app: ApplicationManager):
+#     assert app.main_page.profile_link_text() == CONFIG.developer.login, 'Ссылка профиля не найдена'
 
 
 def test_open_catalog(app: ApplicationManager):
@@ -20,11 +19,19 @@ def test_open_catalog(app: ApplicationManager):
 def test_search_services(app: ApplicationManager):
 
     app.main_page.open_catalog()
+    product = app.catalog.random_product_card()
+    product_title = app.catalog.product_title(product)
+    # product_code = app.catalog.product_code(product)
+    product_href = app.catalog.product_href(product)
 
-    app.catalog.search_text('курсы валют')
+    app.catalog.search_product(product_title)
 
-    assert app.catalog.count_cards() == 1, 'Найдено более одной карточки продуктов'
-    assert app.catalog.card_rates(), 'Не найдено карточки продукта Курсы валют'
+    cards = app.catalog.all_cards()
+    # opop: WebElement = cards[0]
+    # opopo = app.catalog.get_card_href(opop)
+
+    assert app.catalog.count_elements(cards) == 1, 'Найдено более одной карточки продуктов'
+    assert app.catalog.get_card_href(cards[0]) == product_href, f'Не найдено карточки продукта {product_title}'
     pass
 
 
