@@ -12,26 +12,24 @@ def test_open_catalog(app: ApplicationManager):
 
     assert app.catalog.current_url() == f'{CONFIG.base_url}/catalog'
     assert app.catalog.title_text() == 'Каталог сервисов'
-    assert app.catalog.count_cards() >= 16, 'Не все картоки продуктов отобразились в каталоге'
+    assert app.catalog.count_cards() >= 16, 'Не все карточки продуктов отобразились в каталоге'
     pass
 
 
 def test_search_services(app: ApplicationManager):
 
     app.main_page.open_catalog()
-    product = app.catalog.random_product_card()
-    product_title = app.catalog.product_title(product)
-    # product_code = app.catalog.product_code(product)
-    product_href = app.catalog.product_href(product)
+    random_product = app.catalog.random_product_card()
+
+    product_title = app.catalog.product_title(random_product)
 
     app.catalog.search_product(product_title)
 
-    cards = app.catalog.all_cards()
-    # opop: WebElement = cards[0]
-    # opopo = app.catalog.get_card_href(opop)
+    found_cards = app.catalog.all_cards()
 
-    assert app.catalog.count_elements(cards) == 1, 'Найдено более одной карточки продуктов'
-    assert app.catalog.get_card_href(cards[0]) == product_href, f'Не найдено карточки продукта {product_title}'
+    for card in found_cards:
+        assert product_title in app.catalog.product_title(card),\
+            f'Поиск отработал не верно, найдена карточка без поисковой фразы "{product_title}"'
     pass
 
 
