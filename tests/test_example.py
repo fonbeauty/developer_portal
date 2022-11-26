@@ -2,8 +2,8 @@ from conftest import CONFIG
 from model.application_manager import ApplicationManager
 
 
-# def test_open_main_page(app: ApplicationManager):
-#     assert app.main_page.profile_link_text() == CONFIG.developer.login, 'Ссылка профиля не найдена'
+def test_open_main_page(app: ApplicationManager):
+    assert app.main_page.profile_link_text() == CONFIG.developer.login, 'Ссылка профиля не найдена'
 
 
 def test_open_catalog(app: ApplicationManager):

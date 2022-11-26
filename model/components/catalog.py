@@ -41,12 +41,6 @@ class Catalog(BaseDriver):
     def all_cards(self) -> list:
         return self.wait_elements(self.ALL_CARDS)
 
-    def count_elements(self, elements: list) -> int:
-        return len(elements)
-
-    def get_card_href(self, card: WebElement) -> str:
-        return card.get_attribute('href')
-
     def count_cards(self) -> int:
         return len(self.all_cards())
 
