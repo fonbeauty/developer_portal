@@ -8,6 +8,8 @@ class Main(BaseDriver):
 
     PROFILE_LINK = '.profile__link'
     CATALOG_LINK = 'a[href="/catalog"].text-link'
+    SPACE_LINK_ORG = '.currentOrg__name a'
+    USER_MENU_BLOCK = '#user_menu_block .dropdown__orgMenu.orgMenu'
 
     def __init__(self, driver: WebDriver):
         super().__init__(driver)
@@ -26,3 +28,16 @@ class Main(BaseDriver):
 
     def open_catalog(self) -> None:
         self.catalog_link_click()
+
+    def organization_link(self) -> WebElement:
+        return self.wait_element(self.SPACE_LINK_ORG)
+
+    def open_user_menu(self):
+        self.profile_link().click()
+        self.wait_element(self.USER_MENU_BLOCK)
+        return self
+
+    def open_organization(self):
+        self.organization_link().click()
+        return self
+

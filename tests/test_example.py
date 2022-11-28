@@ -4,6 +4,20 @@ from model.application_manager import ApplicationManager
 
 def test_open_main_page(app: ApplicationManager):
     assert app.main_page.profile_link_text() == CONFIG.developer.login, 'Ссылка профиля не найдена'
+    pass
+
+def test_open_organization(app: ApplicationManager):
+    link = app.main_page.organization_link()
+    # app.main_page.open_organization()
+    (
+        app.main_page
+        .open_user_menu()
+        .open_organization()
+    )
+
+    assert app.applications.title_type(), 'Страница приложений загрузилась не верно'
+
+    pass
 
 
 def test_open_catalog(app: ApplicationManager):
