@@ -101,11 +101,10 @@ def driver_cookie(driver: WebDriver) -> dict:
 
 
 @pytest.fixture(scope='function')
-def app(driver: WebDriver, driver_cookie) -> ApplicationManager:
+def authorization(driver: WebDriver, driver_cookie) -> ApplicationManager:
     _app = ApplicationManager(driver)
     _app.main_page.driver.get(url=CONFIG.base_url)
     _app.main_page.driver.add_cookie(driver_cookie)
-    _app.main_page.driver.get(url=CONFIG.base_url)
     return _app
 
 
