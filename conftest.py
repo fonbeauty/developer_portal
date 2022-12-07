@@ -86,7 +86,10 @@ def driver_cookie(driver: WebDriver) -> dict:
 
         wait_element(selector='#edit-openid-connect-client-keycloak-login', driver=driver).click()
         if stand == 'dev':
-            wait_element(selector='label[for="edit-user-user1-3352-axvpnexamplesparta"].radioBtn-checkmark', driver=driver).click()
+            #этот локатор для дев стенда на 2001 порту:
+            # wait_element(selector='label[for="edit-user-user1-3352-axvpnexamplesparta"].radioBtn-checkmark', driver=driver).click()
+            #этот локатор для дев стенда на 5001 порту:
+            wait_element(selector='label[for="edit-user-user1-2273-mujiyexamplesparta"].radioBtn-checkmark', driver=driver).click()
             wait_element(selector='#edit-login', driver=driver).click()
         else:
             wait_element(selector='#username', driver=driver).send_keys(developer.login)

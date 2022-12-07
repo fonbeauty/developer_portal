@@ -1,5 +1,6 @@
 from selenium.webdriver.chrome.webdriver import WebDriver
 
+from model.components.application import Application
 from model.components.applications import Applications
 from model.components.catalog import Catalog
 from model.components.main import Main
@@ -16,3 +17,4 @@ class ApplicationManager:
         self.product = Product(driver)
         self.swagger = Swagger(driver)
         self.applications = Applications(driver)
+        self.application = Application(driver)

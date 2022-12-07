@@ -18,3 +18,4 @@ class StandConfig:
     chromedriver_path: str
     developer: User
     stand: str
+    default_password: str
