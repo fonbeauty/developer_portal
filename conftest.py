@@ -77,12 +77,12 @@ def driver(request) -> WebDriver:
 @pytest.fixture(scope='function')
 def driver_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
-    user_session_id = CONFIG.developer.session
+    user_session_id = CONFIG.users.developer.session
     global DEVELOPER_COOKIE
     DEVELOPER_COOKIE = file.cookie_read(stand, user_session_id)
-    if DEVELOPER_COOKIE is None or file.cookie_expired(stand, user_session_id, CONFIG.cookie_expire):
-        developer = CONFIG.developer
-        driver.get(url=CONFIG.base_url)
+    if DEVELOPER_COOKIE is None or file.cookie_expired(stand, user_session_id, CONFIG.timeouts.cookie_expire):
+        developer = CONFIG.users.developer
+        driver.get(url=CONFIG.urls.base_url)
 
         wait_element(selector='#edit-openid-connect-client-keycloak-login', driver=driver).click()
         if stand == 'dev':
@@ -108,7 +108,7 @@ def driver_cookie(driver: WebDriver) -> dict:
 @pytest.fixture(scope='function')
 def authorization(driver: WebDriver, driver_cookie) -> ApplicationManager:
     _app = ApplicationManager(driver)
-    _app.main_page.driver.get(url=CONFIG.base_url)
+    _app.main_page.driver.get(url=CONFIG.urls.base_url)
     _app.main_page.driver.add_cookie(driver_cookie)
     return _app
 

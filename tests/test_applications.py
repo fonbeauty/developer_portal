@@ -7,16 +7,15 @@ from model.application_manager import ApplicationManager
 
 
 @pytest.fixture(scope='function')
-def profile_page(authorization: ApplicationManager) -> ApplicationManager:
-    url = f'{CONFIG.base_url}/profile/{CONFIG.developer.space}'
+def app(authorization: ApplicationManager) -> ApplicationManager:
+    url = f'{CONFIG.urls.base_url}/profile/{CONFIG.users.developer.space}'
     authorization.main_page.driver.get(url=url)
     authorization.__setattr__('url', url)
     return authorization
 
 
-def test_create_application(profile_page):
-    correct_password = CONFIG.default_password
-    app = profile_page
+def test_create_application(app):
+    correct_password = CONFIG.defaults.password
     app.profile.go_to_create_application()
     (
         app.application
