@@ -1,7 +1,7 @@
 from selenium.webdriver.chrome.webdriver import WebDriver
 
 from model.components.application import Application
-from model.components.applications import Applications
+from model.components.profile import Profile
 from model.components.catalog import Catalog
 from model.components.main import Main
 from model.components.product import Product
@@ -16,5 +16,5 @@ class ApplicationManager:
         self.catalog = Catalog(driver)
         self.product = Product(driver)
         self.swagger = Swagger(driver)
-        self.applications = Applications(driver)
+        self.profile = Profile(driver)
         self.application = Application(driver)
