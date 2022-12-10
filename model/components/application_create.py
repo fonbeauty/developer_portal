@@ -4,11 +4,12 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from model.components.base_driver import BaseDriver
+from model.models import StandConfig
 
 
-class Application(BaseDriver):
+class ApplicationCreate(BaseDriver):
 
-    _PAGE_PATH = 'profile/space/app/create'
+    _PAGE_PATH = 'base_url/profile/space/app/create'
     _APP_NAME = '#edit-app-name'
     _APP_DESCRIPTION = '#edit-app-description'
     _REDIRECT_URI = '#edit-item-0'
@@ -20,7 +21,8 @@ class Application(BaseDriver):
     _SUCCESS_CREATE_TEXT = '.alert.title-alert.success'
     _TO_APPLICATION_BTN = '.return-btn'
 
-    def __init__(self, driver: WebDriver):
+    def __init__(self, driver: WebDriver, config: StandConfig):
+        self.page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}/app/create'
         super().__init__(driver)
 
     def cancel_btn_click(self):
@@ -33,9 +35,8 @@ class Application(BaseDriver):
         self.wait_element(self._APP_NAME).send_keys(name)
         return self
 
-    def type_application_description(self):
-        self.wait_element(self._APP_DESCRIPTION)\
-            .send_keys('Application was created by autotests, it should be deleted')
+    def type_application_description(self, description: str):
+        self.wait_element(self._APP_DESCRIPTION).send_keys(description)
         return self
 
     def type_password(self, password: str):
@@ -46,10 +47,13 @@ class Application(BaseDriver):
         self.wait_element(self._PASSWORD_CONFIRMATION).send_keys(password)
         return self
 
-    def fill_form(self, password: str):
+    def fill_form(self,
+                  password: str,
+                  name: str = f'autotest_{uuid.uuid4()}',
+                  description: str = 'Application was created by autotests, it should be deleted'):
         (
-            self.type_application_name(f'autotest_{uuid.uuid4()}')
-                .type_application_description()
+            self.type_application_name(name)
+                .type_application_description(description)
                 .type_password(password)
                 .type_password_confirmation(password)
         )

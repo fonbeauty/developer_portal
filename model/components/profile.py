@@ -7,6 +7,7 @@ from model.models import StandConfig
 
 class Profile(BaseDriver):
 
+    _PAGE_PATH = 'base_url/profile/space'
     _TITLE_TYPE = '.title__type'
     _CREATE_APPLICATION_BTN = '.btn__secondary'
 
@@ -17,7 +18,7 @@ class Profile(BaseDriver):
     def title_type(self) -> WebElement:
         return self.wait_element(self._TITLE_TYPE)
 
-    def go_to_create_application(self) -> None:
+    def open_create_application(self) -> None:
         self.wait_element(self._CREATE_APPLICATION_BTN).click()
 
 

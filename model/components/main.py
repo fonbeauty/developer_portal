@@ -7,6 +7,7 @@ from model.models import StandConfig
 
 class Main(BaseDriver):
 
+    _PAGE_PATH = 'base_url'
     _PROFILE_LINK = '.profile__link'
     _CATALOG_LINK = 'a[href="/catalog"].text-link'
     _SPACE_LINK_ORG = '.currentOrg__name a'
