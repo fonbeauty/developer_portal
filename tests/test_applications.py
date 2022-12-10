@@ -8,9 +8,7 @@ from model.application_manager import ApplicationManager
 
 @pytest.fixture(scope='function')
 def app(authorization: ApplicationManager) -> ApplicationManager:
-    url = f'{CONFIG.urls.base_url}/profile/{CONFIG.users.developer.space}'
-    authorization.main_page.driver.get(url=url)
-    authorization.__setattr__('url', url)
+    authorization.profile.open()
     return authorization
 
 

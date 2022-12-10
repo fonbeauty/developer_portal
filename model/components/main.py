@@ -13,11 +13,8 @@ class Main(BaseDriver):
     _USER_MENU_BLOCK = '#user_menu_block .dropdown__orgMenu.orgMenu'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
-        self.url = config.urls.base_url
+        self.page_url = config.urls.base_url
         super().__init__(driver)
-
-    def open(self):
-        self.driver.get(self.url)
 
     def set_cookie(self, cookie: dict):
         self.driver.add_cookie(cookie)

@@ -17,5 +17,5 @@ class ApplicationManager:
         self.catalog = Catalog(driver)
         self.product = Product(driver)
         self.swagger = Swagger(driver)
-        self.profile = Profile(driver)
+        self.profile = Profile(driver, config)
         self.application = Application(driver)
