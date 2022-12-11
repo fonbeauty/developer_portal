@@ -8,13 +8,13 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class BaseDriver:
 
-    page_url: str
+    _page_url: str
 
     def __init__(self, driver: WebDriver):
         self.driver = driver
 
     def open(self):
-        self.driver.get(self.page_url)
+        self.driver.get(self._page_url)
 
     def wait_element(self, selector, timeout=1, by=By.CSS_SELECTOR) -> WebElement:
         try:

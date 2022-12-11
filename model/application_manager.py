@@ -1,6 +1,6 @@
 from selenium.webdriver.chrome.webdriver import WebDriver
 
-from model.components.application_create import ApplicationCreate
+from model.components.create_application import CreateApplication
 from model.components.profile import Profile
 from model.components.catalog import Catalog
 from model.components.main import Main
@@ -18,4 +18,4 @@ class ApplicationManager:
         self.product = Product(driver)
         self.swagger = Swagger(driver)
         self.profile = Profile(driver, config)
-        self.application_create = ApplicationCreate(driver, config)
+        self.create_application = CreateApplication(driver, config)

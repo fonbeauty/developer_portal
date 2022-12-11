@@ -16,11 +16,11 @@ def test_create_application(app):
     correct_password = CONFIG.defaults.password
     app.profile.open_create_application()
     (
-        app.application_create
+        app.create_application
            .fill_form(correct_password)
-           .submit()
+           # .submit()
     )
-    assert app.application_create.success_create_text(), 'Нет сообщения о успешном создании приложения'
+    assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
     # opop = app.__getattribute__('url')
     # assert app.applications.driver.current_url == app.__getattribute__('url'), 'После нажатия кнопки отмены открылась не та страница'
     pass

@@ -7,9 +7,10 @@ from model.components.base_driver import BaseDriver
 from model.models import StandConfig
 
 
-class ApplicationCreate(BaseDriver):
+class CreateApplication(BaseDriver):
 
-    _PAGE_PATH = 'base_url/profile/space/app/create'
+    _page_url = 'base_url/profile/space/app/create'
+
     _APP_NAME = '#edit-app-name'
     _APP_DESCRIPTION = '#edit-app-description'
     _REDIRECT_URI = '#edit-item-0'
@@ -22,7 +23,7 @@ class ApplicationCreate(BaseDriver):
     _TO_APPLICATION_BTN = '.return-btn'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
-        self.page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}/app/create'
+        self._page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}/app/create'
         super().__init__(driver)
 
     def cancel_btn_click(self):

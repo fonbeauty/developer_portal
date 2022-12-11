@@ -7,12 +7,13 @@ from model.models import StandConfig
 
 class Profile(BaseDriver):
 
-    _PAGE_PATH = 'base_url/profile/space'
+    _page_url = 'base_url/profile/space'
+
     _TITLE_TYPE = '.title__type'
     _CREATE_APPLICATION_BTN = '.btn__secondary'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
-        self.page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}'
+        self._page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}'
         super().__init__(driver)
 
     def title_type(self) -> WebElement:

@@ -7,14 +7,15 @@ from model.models import StandConfig
 
 class Main(BaseDriver):
 
-    _PAGE_PATH = 'base_url'
+    _page_url = 'base_url'
+
     _PROFILE_LINK = '.profile__link'
     _CATALOG_LINK = 'a[href="/catalog"].text-link'
     _SPACE_LINK_ORG = '.currentOrg__name a'
     _USER_MENU_BLOCK = '#user_menu_block .dropdown__orgMenu.orgMenu'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
-        self.page_url = config.urls.base_url
+        self._page_url = config.urls.base_url
         super().__init__(driver)
 
     def set_cookie(self, cookie: dict):
