@@ -63,7 +63,7 @@ def driver(request) -> WebDriver:
         prefs = {'download.default_directory': path_for_resources()}
         options.add_experimental_option("prefs", prefs)
         _driver = webdriver.Chrome(
-            executable_path='/Users/18980620/.wdm/drivers/chromedriver/mac64/104.0.5112.79/chromedriver',
+            executable_path=CONFIG.paths.chromedriver_path,
             options=options
         )
     elif selected_browser == 'safari':
