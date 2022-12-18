@@ -1,3 +1,4 @@
+import logging
 import time
 
 import pytest
@@ -7,6 +8,8 @@ from bs4 import BeautifulSoup
 
 from conftest import CONFIG
 from model.application_manager import ApplicationManager
+
+LOGGER = logging.getLogger(__name__)
 
 
 class App:
@@ -53,8 +56,8 @@ def create_app(driver_cookie: dict) -> App:
         form_token = soup.select('input[name=form_token]')[0]['value']
 
         request_body = {
-            'op': 'да, хочу',
-            'confirm': 1,
+            # 'op': 'да, хочу',
+            # 'confirm': 1,
             'form_build_id': f'{form_build_id}',
             'form_token': f'{form_token}',
             'form_id': 'application_delete'
@@ -66,6 +69,8 @@ def create_app(driver_cookie: dict) -> App:
             verify=False,
             data=request_body
         )
+        delete_response.raise_for_status()
+        LOGGER.info(f'Приложение удалено {app_instance.app_id}')
 
 
 def has_class_but_no_id(tag):
@@ -83,6 +88,7 @@ def test_create_application(app, create_app: App):
     )
 
     create_app.app_id = app.create_application.get_created_application_href()
+    LOGGER.info(f'Создано приложение {create_app.app_id}')
     assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
     # opop = app.__getattribute__('url')
     # assert app.applications.driver.current_url == app.__getattribute__('url'), 'После нажатия кнопки отмены открылась не та страница'
