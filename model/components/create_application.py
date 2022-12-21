@@ -21,6 +21,9 @@ class CreateApplication(BaseDriver):
     _RETURN_LINK = '.sideNav__link'
     _SUCCESS_CREATE_TEXT = '.alert.title-alert.success'
     _TO_APPLICATION_BTN = '.return-btn'
+    _CLIENT_ID = '#clientId_key'
+    _CLIENT_SECRET = '#clientSecretGetNew__key'
+    _DOWNLOAD_CERT = '[name=download_cert]'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}/app/create'
@@ -66,10 +69,18 @@ class CreateApplication(BaseDriver):
     def success_create_text(self) -> WebElement:
         return self.wait_element(self._SUCCESS_CREATE_TEXT)
 
-    def to_application_btn(self) -> WebElement:
-        return self.wait_element(self._TO_APPLICATION_BTN)
-
     def get_created_application_href(self) -> str:
-        return self.to_application_btn().get_attribute('href')
+        return self.wait_element(self._TO_APPLICATION_BTN).get_attribute('href')
 
+    def client_id(self) -> str:
+        return self.wait_element(self._CLIENT_ID).text
+
+    def client_secret(self) -> str:
+        return self.wait_element(self._CLIENT_SECRET).text
+
+    def download_cert_btn(self) -> WebElement:
+        return self.wait_element(self._DOWNLOAD_CERT)
+
+    def download_cert(self) -> None:
+        self.download_cert_btn().click()
 

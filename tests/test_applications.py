@@ -1,5 +1,6 @@
 import logging
 import time
+import uuid
 
 import pytest
 import requests
@@ -15,15 +16,25 @@ LOGGER = logging.getLogger(__name__)
 class App:
 
     app_id: str
+    app_name: str
+    app_description: str
+    password: str
+
+    def __init__(self):
+        self.password = CONFIG.defaults.password
+        self.app_name = 'Приложение создано автотестами, можно удалить' \
+                        'Application was created by autotests, it may be deleted'
+        self.app_name = f'autotest_{uuid.uuid4()}'
+
 
     # def create(self, id: str ):
     #     self.app_id = id
     #     pass
     #
-    # def cleanup(self):
-    #     olol = self.app_id
-    #     print(olol)
-    #     pass
+    def cleanup(self):
+        olol = self.app_id
+        print(olol)
+        pass
 
 
 @pytest.fixture(scope='function')
@@ -73,14 +84,12 @@ def create_app(driver_cookie: dict) -> App:
         LOGGER.info(f'Приложение удалено {app_instance.app_id}')
 
 
-def has_class_but_no_id(tag):
-    return tag.input and tag.has_attr('data-drupal-selector')
-
-
 def test_create_application(app, create_app: App):
 
     correct_password = CONFIG.defaults.password
     app.profile.open_create_application()
+    # app.create_application.clear_app_description()
+    # app.create_application.type_application_description('obojechki')
     (
         app.create_application
            .fill_form(correct_password)
@@ -90,7 +99,13 @@ def test_create_application(app, create_app: App):
     create_app.app_id = app.create_application.get_created_application_href()
     LOGGER.info(f'Создано приложение {create_app.app_id}')
     assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
+    assert app.create_application.download_cert_btn()
+    olol = app.create_application.client_id()
+    ololol = app.create_application.client_secret()
+
+
     # opop = app.__getattribute__('url')
     # assert app.applications.driver.current_url == app.__getattribute__('url'), 'После нажатия кнопки отмены открылась не та страница'
     pass
     # time.sleep(3)
+
