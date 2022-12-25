@@ -72,11 +72,17 @@ class CreateApplication(BaseDriver):
     def get_created_application_href(self) -> str:
         return self.wait_element(self._TO_APPLICATION_BTN).get_attribute('href')
 
+    def client_id_element(self) -> WebElement:
+        return self.wait_element(self._CLIENT_ID)
+
     def client_id(self) -> str:
-        return self.wait_element(self._CLIENT_ID).text
+        return self.wait_element(self._CLIENT_ID).get_attribute('value')
+
+    def client_secret_element(self) -> WebElement:
+        return self.wait_element(self._CLIENT_SECRET)
 
     def client_secret(self) -> str:
-        return self.wait_element(self._CLIENT_SECRET).text
+        return self.client_secret_element().get_attribute('value')
 
     def download_cert_btn(self) -> WebElement:
         return self.wait_element(self._DOWNLOAD_CERT)

@@ -13,27 +13,57 @@ from model.application_manager import ApplicationManager
 LOGGER = logging.getLogger(__name__)
 
 
-class App:
+class Application:
 
-    app_id: str
-    app_name: str
-    app_description: str
-    password: str
-
-    def __init__(self):
+    def __init__(self, driver_cookie: dict):
         self.password = CONFIG.defaults.password
-        self.app_name = 'Приложение создано автотестами, можно удалить' \
+        self.app_description = 'Приложение создано автотестами, можно удалить' \
                         'Application was created by autotests, it may be deleted'
         self.app_name = f'autotest_{uuid.uuid4()}'
+        self.driver_cookie = driver_cookie
+        self.app_id = ''
 
+    def create(self, app: ApplicationManager):
+        correct_password = CONFIG.defaults.password
+        app.profile.open_create_application()
+        (
+            app.create_application
+                .fill_form(correct_password)
+                .submit()
+        )
+        self.app_id = app.create_application.get_created_application_href()
+        LOGGER.info(f'Создано приложение {self.app_id}')
 
-    # def create(self, id: str ):
-    #     self.app_id = id
-    #     pass
-    #
-    def cleanup(self):
-        olol = self.app_id
-        print(olol)
+    def delete(self):
+        with requests.Session() as s:
+            headers = {'Content-Type': 'application/x-www-form-urlencoded',
+                       'cookie': f'{self.driver_cookie["name"]}={self.driver_cookie["value"]}'}
+
+            response = s.get(
+                url=f'{self.app_id}/delete',
+                headers=headers,
+                verify=False
+            )
+            response.raise_for_status()
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+            form_build_id = soup.select('input[name=form_build_id]')[0]['value']
+            form_token = soup.select('input[name=form_token]')[0]['value']
+
+            request_body = {
+                # 'op': 'да, хочу',
+                # 'confirm': 1,
+                'form_build_id': f'{form_build_id}',
+                'form_token': f'{form_token}',
+                'form_id': 'application_delete'
+            }
+
+            delete_response = s.post(
+                url=f'{self.app_id}/delete',
+                data=request_body
+            )
+            delete_response.raise_for_status()
+            LOGGER.info(f'Приложение удалено {self.app_id}')
         pass
 
 
@@ -44,68 +74,43 @@ def app(authorization: ApplicationManager) -> ApplicationManager:
 
 
 @pytest.fixture(scope='function')
-def create_app(driver_cookie: dict) -> App:
-    app_instance = App()
+def delete_app(driver_cookie: dict) -> Application:
+    application = Application(driver_cookie)
 
-    yield app_instance
+    yield application
 
-    delete_url = f'{app_instance.app_id}/delete'
-
-    with requests.Session() as s:
-        cookie_header = {'cookie': f'{driver_cookie["name"]}={driver_cookie["value"]}'}
-        content_type_header = {'Content-Type': 'application/x-www-form-urlencoded'}
-        result_headers = {**content_type_header, **cookie_header}
-
-        response = s.get(
-            url=delete_url,
-            headers=result_headers,
-            verify=False)
-        response.raise_for_status()
-
-        soup = BeautifulSoup(response.text, 'html.parser')
-        form_build_id = soup.select('input[name=form_build_id]')[0]['value']
-        form_token = soup.select('input[name=form_token]')[0]['value']
-
-        request_body = {
-            # 'op': 'да, хочу',
-            # 'confirm': 1,
-            'form_build_id': f'{form_build_id}',
-            'form_token': f'{form_token}',
-            'form_id': 'application_delete'
-        }
-
-        delete_response = s.post(
-            url=delete_url,
-            headers=result_headers,
-            verify=False,
-            data=request_body
-        )
-        delete_response.raise_for_status()
-        LOGGER.info(f'Приложение удалено {app_instance.app_id}')
+    application.delete()
 
 
-def test_create_application(app, create_app: App):
+@pytest.fixture(scope='function')
+def create_app(app: ApplicationManager, driver_cookie: dict) -> Application:
+    application = Application(driver_cookie)
+    application.create(app)
 
+    yield application
+
+    # application.delete()
+
+
+def test_create_application(app, delete_app):
     correct_password = CONFIG.defaults.password
     app.profile.open_create_application()
-    # app.create_application.clear_app_description()
-    # app.create_application.type_application_description('obojechki')
     (
         app.create_application
-           .fill_form(correct_password)
-           .submit()
+            .fill_form(correct_password)
+            .submit()
     )
 
-    create_app.app_id = app.create_application.get_created_application_href()
-    LOGGER.info(f'Создано приложение {create_app.app_id}')
+    delete_app.app_id = app.create_application.get_created_application_href()
+    LOGGER.info(f'Создано приложение {delete_app.app_id}')
     assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
     assert app.create_application.download_cert_btn()
-    olol = app.create_application.client_id()
-    ololol = app.create_application.client_secret()
-
-
-    # opop = app.__getattribute__('url')
-    # assert app.applications.driver.current_url == app.__getattribute__('url'), 'После нажатия кнопки отмены открылась не та страница'
+    # olol = app.create_application.client_id()
+    assert app.create_application.client_id()
+    assert app.create_application.client_secret()
     pass
-    # time.sleep(3)
+#     # time.sleep(3)
 
+
+def test_delete_application(app, create_app: Application):
+    create_app.delete()
