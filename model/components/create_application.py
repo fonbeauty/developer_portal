@@ -54,7 +54,9 @@ class CreateApplication(BaseDriver):
     def fill_form(self,
                   password: str,
                   name: str = f'autotest_{uuid.uuid4()}',
-                  description: str = 'Application was created by autotests, it should be deleted'):
+                  description: str = 'Приложение создано автотестами, можно удалить'
+                                     'Application was created by autotests, it may be deleted'
+                  ):
         (
             self.type_application_name(name)
                 .type_application_description(description)
