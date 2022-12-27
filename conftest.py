@@ -50,6 +50,11 @@ def pytest_configure(config):
     config
 
 
+@pytest.fixture(scope='session')
+def portal_session():
+    pass
+
+
 @pytest.fixture(scope='function')
 def driver(request) -> WebDriver:
     selected_browser = request.config.getoption('--browser')
