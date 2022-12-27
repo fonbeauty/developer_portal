@@ -6,12 +6,12 @@ from model.application_manager import ApplicationManager
 
 @pytest.fixture(scope='function')
 def open_main_page(authorization: ApplicationManager) -> ApplicationManager:
-    authorization.main_page.driver.get(url=CONFIG.base_url)
+    authorization.main_page.driver.get(url=CONFIG.urls.base_url)
     return authorization
 
 
 def test_open_main_page(open_main_page: ApplicationManager):
-    assert open_main_page.main_page.profile_link_text() == CONFIG.developer.login, 'Ссылка профиля не найдена'
+    assert open_main_page.main_page.profile_link_text() == CONFIG.users.developer.login, 'Ссылка профиля не найдена'
     pass
 
 
@@ -24,7 +24,7 @@ def test_open_organization(open_main_page: ApplicationManager):
         .open_organization()
     )
 
-    assert open_main_page.applications.title_type(), 'Страница приложений загрузилась не верно'
+    assert open_main_page.profile.title_type(), 'Страница приложений загрузилась не верно'
 
     pass
 
@@ -33,7 +33,7 @@ def test_open_catalog(open_main_page: ApplicationManager):
 
     open_main_page.main_page.open_catalog()
 
-    assert open_main_page.catalog.current_url() == f'{CONFIG.base_url}/catalog'
+    assert open_main_page.catalog.current_url() == f'{CONFIG.urls.base_url}/catalog'
     assert open_main_page.catalog.title_text() == 'Каталог сервисов'
     assert open_main_page.catalog.count_cards() >= 16, 'Не все карточки продуктов отобразились в каталоге'
     pass

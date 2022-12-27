@@ -63,7 +63,7 @@ def driver(request) -> WebDriver:
         prefs = {'download.default_directory': path_for_resources()}
         options.add_experimental_option("prefs", prefs)
         _driver = webdriver.Chrome(
-            executable_path='/Users/18980620/.wdm/drivers/chromedriver/mac64/104.0.5112.79/chromedriver',
+            executable_path='C:\\Users\\20125604\\PycharmProjects\\dev_portal\\ChromeDriver\\chromedriver_win32_107.5304.0.62.exe',
             options=options
         )
     elif selected_browser == 'safari':
@@ -77,16 +77,21 @@ def driver(request) -> WebDriver:
 @pytest.fixture(scope='function')
 def driver_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
-    user_session_id = CONFIG.developer.session
+    user_session_id = CONFIG.users.developer.session
     global DEVELOPER_COOKIE
     DEVELOPER_COOKIE = file.cookie_read(stand, user_session_id)
-    if DEVELOPER_COOKIE is None or file.cookie_expired(stand, user_session_id, CONFIG.cookie_expire):
-        developer = CONFIG.developer
-        driver.get(url=CONFIG.base_url)
+    if DEVELOPER_COOKIE is None or file.cookie_expired(stand, user_session_id, CONFIG.timeouts.cookie_expire):
+        developer = CONFIG.users.developer
+        driver.get(url=CONFIG.urls.base_url)
 
         wait_element(selector='#edit-openid-connect-client-keycloak-login', driver=driver).click()
         if stand == 'dev':
-            wait_element(selector='label[for="edit-user-user1-3352-axvpnexamplesparta"].radioBtn-checkmark', driver=driver).click()
+            #этот локатор для дев стенда на 2001 порту:
+            # wait_element(selector='label[for="edit-user-user1-3352-axvpnexamplesparta"].radioBtn-checkmark', driver=driver).click()
+            #этот локатор для дев стенда на 5001 порту:
+            # wait_element(selector='label[for="edit-user-user1-2273-mujiyexamplesparta"].radioBtn-checkmark', driver=driver).click()
+            #этот локатор для дев стенда на 2100 порту:
+            wait_element(selector='label[for="edit-user-user1-6787-zxiswexamplesparta"].radioBtn-checkmark', driver=driver).click()
             wait_element(selector='#edit-login', driver=driver).click()
         else:
             wait_element(selector='#username', driver=driver).send_keys(developer.login)
@@ -102,9 +107,9 @@ def driver_cookie(driver: WebDriver) -> dict:
 
 @pytest.fixture(scope='function')
 def authorization(driver: WebDriver, driver_cookie) -> ApplicationManager:
-    _app = ApplicationManager(driver)
-    _app.main_page.driver.get(url=CONFIG.base_url)
-    _app.main_page.driver.add_cookie(driver_cookie)
+    _app = ApplicationManager(driver, CONFIG)
+    _app.main_page.open()
+    _app.main_page.set_cookie(driver_cookie)
     return _app
 
 

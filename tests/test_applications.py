@@ -1,19 +1,27 @@
 import time
 
 import pytest
-from selenium.webdriver.chrome.webdriver import WebDriver
 
 from conftest import CONFIG
 from model.application_manager import ApplicationManager
 
 
 @pytest.fixture(scope='function')
-def open_application_page(authorization: ApplicationManager) -> ApplicationManager:
-    authorization.main_page.driver.get(url=f'{CONFIG.base_url}/profile/{CONFIG.developer.space}')
+def app(authorization: ApplicationManager) -> ApplicationManager:
+    authorization.profile.open()
     return authorization
 
 
-# @pytest.mark.parametrize('app', [f'profile/{CONFIG.developer.space}'], indirect=True)
-def test_create_application_test(open_application_page):
+def test_create_application(app):
+    correct_password = CONFIG.defaults.password
+    app.profile.open_create_application()
+    (
+        app.create_application
+           .fill_form(correct_password)
+           # .submit()
+    )
+    #assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
+    # opop = app.__getattribute__('url')
+    # assert app.applications.driver.current_url == app.__getattribute__('url'), 'После нажатия кнопки отмены открылась не та страница'
     pass
     # time.sleep(3)
