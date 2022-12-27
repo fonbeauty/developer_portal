@@ -6,6 +6,7 @@ from model.models import StandConfig
 
 
 class Main(BaseDriver):
+
     _page_url = 'base_url'
 
     _PROFILE_LINK = '.profile__link'

@@ -16,7 +16,7 @@ class BaseDriver:
     def open(self):
         self.driver.get(self._page_url)
 
-    def wait_element(self, selector: object, timeout: object = 1, by: object = By.CSS_SELECTOR) -> WebElement:
+    def wait_element(self, selector, timeout=1, by=By.CSS_SELECTOR) -> WebElement:
         try:
             return WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((by, selector)))
         except TimeoutException:
