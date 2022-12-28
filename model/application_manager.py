@@ -3,6 +3,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from model.components.create_application import CreateApplication
 from model.components.profile import Profile
 from model.components.catalog import Catalog
+from model.components.how_to_use import HowToUse
 from model.components.main import Main
 from model.components.product import Product
 from model.components.swagger import Swagger
@@ -19,3 +20,4 @@ class ApplicationManager:
         self.swagger = Swagger(driver)
         self.profile = Profile(driver, config)
         self.create_application = CreateApplication(driver, config)
+        self.help_page = HowToUse(driver, config)
