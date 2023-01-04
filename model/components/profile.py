@@ -11,6 +11,8 @@ class Profile(BaseDriver):
 
     _TITLE_TYPE = '.title__type'
     _CREATE_APPLICATION_BTN = '.btn__secondary'
+    _APPLICATION_CARD = 'a[href="https://10.36.133.96:2100/profile/' \
+                        '00000009-0001-0000-6787-000000000002/app/00000001-0002-0000-6787-000000000010"]'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}'
@@ -21,6 +23,14 @@ class Profile(BaseDriver):
 
     def open_create_application(self) -> None:
         self.wait_element(self._CREATE_APPLICATION_BTN).click()
+
+    def apllication_card(self, href: str) -> WebElement:
+        return self.wait_element(f'a[href="{href}"]')
+
+    def application_enter(self, href: str) -> None:
+        self.apllication_card(href).click()
+
+
 
 
 
