@@ -35,7 +35,7 @@ def cookie_expired(stand: str, user_session_id: str, expire_time: int) -> bool:
     creation_time = datetime.strptime(creation_time_string, format_datetime)
     current_time = datetime.now()
 
-    if (current_time - creation_time).seconds <= expire_time:
+    if (current_time - creation_time).total_seconds() <= expire_time:
         return False
     else:
         return True
