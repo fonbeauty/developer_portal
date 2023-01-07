@@ -4,7 +4,7 @@ import uuid
 from bs4 import BeautifulSoup
 
 from common.sessions import PortalSession
-from conftest import CONFIG
+from model.models import StandConfig
 
 LOGGER = logging.getLogger(__name__)
 
@@ -12,13 +12,19 @@ LOGGER = logging.getLogger(__name__)
 class Application:
 
     def __init__(self,
+                 config: StandConfig,
                  app_href: str = '',
-                 password: str = CONFIG.defaults.password,
+                 password: str = 'default',
                  description: str = 'Приложение создано автотестами, можно удалить'
                                     ' Application was created by autotests, it may be deleted',
-                 name: str = f"autotest_{uuid.uuid4()}"
+                 name: str = f"autotest_{uuid.uuid4()}",
                  ):
-        self.password = password,
+        self.CONFIG = config
+        if password == 'default':
+            self.password = config.defaults.password
+        else:
+            self.password = password
+
         self.app_description = description
         self.app_name = name
         self.app_href = app_href
@@ -26,7 +32,7 @@ class Application:
     def create(self, session: PortalSession):
         with session as s:
             response = s.get(
-                url=f'{CONFIG.urls.base_url}/profile/{CONFIG.users.developer.space}/app/create'
+                url=f'{self.CONFIG.urls.base_url}/profile/{self.CONFIG.users.developer.space}/app/create'
             )
             response.raise_for_status()
 
@@ -48,12 +54,12 @@ class Application:
             }
 
             response = s.post(
-                url=f'{CONFIG.urls.base_url}/profile/{CONFIG.users.developer.space}/app/create',
+                url=f'{self.CONFIG.urls.base_url}/profile/{self.CONFIG.users.developer.space}/app/create',
                 data=request_body
             )
             response.raise_for_status()
             soup = BeautifulSoup(response.text, 'html.parser')
-            self.app_href = f'{CONFIG.urls.base_url}{soup.select("#edit-to-app")[0]["href"]}'
+            self.app_href = f'{self.CONFIG.urls.base_url}{soup.select("#edit-to-app")[0]["href"]}'
             LOGGER.info(f'Создано приложение {self.app_href}')
         pass
 

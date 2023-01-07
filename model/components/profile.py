@@ -1,6 +1,7 @@
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
+from common.application import Application
 from model.components.base_driver import BaseDriver
 from model.models import StandConfig
 
@@ -27,8 +28,8 @@ class Profile(BaseDriver):
     def apllication_card(self, href: str) -> WebElement:
         return self.wait_element(f'a[href="{href}"]')
 
-    def application_enter(self, href: str) -> None:
-        self.apllication_card(href).click()
+    def go_to_application(self, app_instance: Application) -> None:
+        self.apllication_card(app_instance.app_href).click()
 
 
 

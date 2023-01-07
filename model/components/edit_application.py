@@ -7,8 +7,9 @@ from model.components.base_driver import BaseDriver
 from model.models import StandConfig
 
 
-class ApplicationPage(BaseDriver):
-    _page_url = 'base_url/profile/space/app/application_id'
+class EditApplication(BaseDriver):
+
+    _page_url = 'base_url/profile/space/app/application_id/edit'
 
     _CLOSE_COOKIE_BTN = '.cookie__button-text'
 
@@ -20,10 +21,6 @@ class ApplicationPage(BaseDriver):
         self._page_url = ''
         super().__init__(driver)
 
-    def go_to_edit_application(self, app_instance: Application) -> None:
-        self.driver.execute_script(
-            'document.getElementsByClassName("cookie__button-text")[0].style["display"] = "block"'
-        )
-        self.wait_element(self._CLOSE_COOKIE_BTN, timeout=3).click()
-        self.wait_element(f'a[href^="{app_instance.app_href}"]').click()
+    def delete(self, app_instance: Application) -> None:
         pass
+
