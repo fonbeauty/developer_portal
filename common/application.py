@@ -14,17 +14,13 @@ class Application:
     def __init__(self,
                  config: StandConfig,
                  app_href: str = '',
-                 password: str = 'default',
+                 password: str = None,
                  description: str = 'Приложение создано автотестами, можно удалить'
                                     ' Application was created by autotests, it may be deleted',
                  name: str = f"autotest_{uuid.uuid4()}",
                  ):
         self.CONFIG = config
-        if password == 'default':
-            self.password = config.defaults.password
-        else:
-            self.password = password
-
+        self.password = password or config.defaults.password
         self.app_description = description
         self.app_name = name
         self.app_href = app_href
