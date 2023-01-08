@@ -21,3 +21,4 @@ class ApplicationPage(BaseDriver):
     def go_to_edit_application(self, app_instance: Application) -> None:
         self.wait_element(f'a[href^="{app_instance.app_href}"]').click()
         pass
+

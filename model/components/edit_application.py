@@ -11,7 +11,6 @@ class EditApplication(BaseDriver):
 
     _page_url = 'base_url/profile/space/app/application_id/edit'
 
-    _CLOSE_COOKIE_BTN = '.cookie__button-text'
     _DELETE_SUBMIT_BTN = '#edit-submit'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
@@ -22,7 +21,7 @@ class EditApplication(BaseDriver):
         self._page_url = ''
         super().__init__(driver)
 
-    def delete(self, app_instance: Application) -> None:
+    def delete_application(self, app_instance: Application) -> None:
         self.wait_element(f'a[href^="{app_instance.app_href}/delete"]').click()
         self.wait_element(self._DELETE_SUBMIT_BTN).submit()
 
