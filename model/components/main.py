@@ -13,6 +13,8 @@ class Main(BaseDriver):
     _CATALOG_LINK = 'a[href="/catalog"].text-link'
     _SPACE_LINK_ORG = '.currentOrg__name a'
     _USER_MENU_BLOCK = '#user_menu_block .dropdown__orgMenu.orgMenu'
+    _HELP_HEADER_LINK = '.header__dropdown--element.text-link'
+    _HELP_FOOTER_LINK = 'a[href$="/how-to-use"].footer__navigation-item'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = config.urls.base_url
@@ -48,3 +50,8 @@ class Main(BaseDriver):
         self.organization_link().click()
         return self
 
+    def help_header_link_click(self):
+        self.wait_element(self._HELP_HEADER_LINK).click()
+
+    def help_footer_link_click(self):
+        self.wait_element(self._HELP_FOOTER_LINK).click()
