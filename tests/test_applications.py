@@ -24,7 +24,7 @@ def app(authorization: ApplicationManager) -> ApplicationManager:
 
 
 @pytest.fixture(scope='function')
-def delete_app(portal_session: PortalSession) -> Application:
+def teardown_delete_app(portal_session: PortalSession) -> Application:
     application = Application(CONFIG)
 
     yield application
@@ -40,7 +40,7 @@ def create_app(portal_session: PortalSession) -> Application:
     yield application
 
 
-def test_create_application(app, delete_app):
+def test_create_application(app, teardown_delete_app):
     app.profile.open_create_application()
     (
         app.create_application
@@ -48,13 +48,13 @@ def test_create_application(app, delete_app):
             .submit()
     )
 
-    delete_app.app_href = app.create_application.get_created_application_href()
+    teardown_delete_app.app_href = app.create_application.get_created_application_href()
     assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
     assert app.create_application.download_cert_btn()
     # olol = app.create_application.client_id()
     assert app.create_application.client_id()
     assert app.create_application.client_secret()
-    LOGGER.info(f'Создано приложение {delete_app.app_href}')
+    LOGGER.info(f'Создано приложение {teardown_delete_app.app_href}')
     pass
 
 
