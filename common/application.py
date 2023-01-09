@@ -57,7 +57,7 @@ class Application:
             soup = BeautifulSoup(response.text, 'html.parser')
             self.app_href = f'{self.CONFIG.urls.base_url}{soup.select("#edit-to-app")[0]["href"]}'
             LOGGER.info(f'Создано приложение {self.app_href}')
-        pass
+        return self
 
     def delete(self, session: PortalSession):
         with session as s:
@@ -84,4 +84,4 @@ class Application:
             )
             delete_response.raise_for_status()
             LOGGER.info(f'Приложение удалено {self.app_href}')
-        pass
+        return self

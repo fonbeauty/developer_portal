@@ -27,6 +27,7 @@ class CreateApplication(BaseDriver):
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}/app/create'
+        self.config = config
         super().__init__(driver)
 
     def cancel_btn_click(self):
@@ -52,7 +53,7 @@ class CreateApplication(BaseDriver):
         return self
 
     def fill_form(self,
-                  password: str,
+                  password: str = None,
                   name: str = f'autotest_{uuid.uuid4()}',
                   description: str = 'Приложение создано автотестами, можно удалить'
                                      'Application was created by autotests, it may be deleted'
@@ -60,8 +61,8 @@ class CreateApplication(BaseDriver):
         (
             self.type_application_name(name)
                 .type_application_description(description)
-                .type_password(password)
-                .type_password_confirmation(password)
+                .type_password(password or self.config.defaults.password)
+                .type_password_confirmation(password or self.config.defaults.password)
         )
         return self
 
