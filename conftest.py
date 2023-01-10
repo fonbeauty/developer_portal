@@ -68,7 +68,7 @@ def driver(request) -> WebDriver:
         prefs = {'download.default_directory': path_for_resources()}
         options.add_experimental_option("prefs", prefs)
         _driver = webdriver.Chrome(
-            executable_path=CONFIG.paths.chromedriver_path,
+            executable_path='C:\Program Files (x86)\ChromeDriver\chromedriver_win32_107.5304.0.62.exe',
             options=options
         )
     elif selected_browser == 'safari':
@@ -114,6 +114,7 @@ def driver_cookie(driver: WebDriver) -> dict:
 def authorization(driver: WebDriver, driver_cookie) -> ApplicationManager:
     _app = ApplicationManager(driver, CONFIG)
     _app.main_page.open()
+    _app.main_page.cookie_informing_close()
     _app.main_page.set_cookie(driver_cookie)
     return _app
 
