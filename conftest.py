@@ -15,7 +15,6 @@ from utils import file
 from utils.file import path_for_resources
 
 CONFIG: StandConfig
-DEVELOPER_COOKIE: dict
 
 
 def pytest_addoption(parser):
@@ -41,8 +40,6 @@ def pytest_sessionstart(session: pytest.Session):
     global CONFIG
     stand = session.config.getoption('--stand')
     CONFIG = get_config(stand)
-    global DEVELOPER_COOKIE
-    DEVELOPER_COOKIE = None
     pass
 
 
@@ -82,32 +79,27 @@ def driver(request) -> WebDriver:
 @pytest.fixture(scope='function')
 def driver_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
-    user_session_id = CONFIG.users.developer.session
-    global DEVELOPER_COOKIE
-    DEVELOPER_COOKIE = file.cookie_read(stand, user_session_id)
-    if DEVELOPER_COOKIE is None or file.cookie_expired(stand, user_session_id, CONFIG.timeouts.cookie_expire):
+    session_id = CONFIG.defaults.session
+    developer_cookie = file.cookie_read(stand, session_id)
+    if developer_cookie is None or file.cookie_expired(stand, session_id, CONFIG.timeouts.cookie_expire):
         developer = CONFIG.users.developer
         driver.get(url=CONFIG.urls.base_url)
 
         wait_element(selector='#edit-openid-connect-client-keycloak-login', driver=driver).click()
         if stand == 'dev':
-            #этот локатор для дев стенда на 2001 порту:
-            # wait_element(selector='label[for="edit-user-user1-3352-axvpnexamplesparta"].radioBtn-checkmark', driver=driver).click()
-            #этот локатор для дев стенда на 5001 порту:
-            # wait_element(selector='label[for="edit-user-user1-2273-mujiyexamplesparta"].radioBtn-checkmark', driver=driver).click()
-            #этот локатор для дев стенда на 2100 порту:
-            wait_element(selector='label[for="edit-user-user1-6787-zxiswexamplesparta"].radioBtn-checkmark', driver=driver).click()
+            wait_element(selector='label[for="edit-user-user1-6787-zxiswexamplesparta"].radioBtn-checkmark',
+                         driver=driver).click()
             wait_element(selector='#edit-login', driver=driver).click()
         else:
             wait_element(selector='#username', driver=driver).send_keys(developer.login)
             wait_element(selector='#password', driver=driver).send_keys(developer.password)
             wait_element(selector='#kc-login', driver=driver).click()
 
-        DEVELOPER_COOKIE = driver.get_cookie(user_session_id)
-        file.cookie_write(stand, user_session_id, DEVELOPER_COOKIE)
-        return DEVELOPER_COOKIE
+        developer_cookie = driver.get_cookie(session_id)
+        file.cookie_write(stand, session_id, developer_cookie)
+        return developer_cookie
     else:
-        return DEVELOPER_COOKIE
+        return developer_cookie
 
 
 @pytest.fixture(scope='function')

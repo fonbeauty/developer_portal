@@ -59,6 +59,12 @@ def test_create_application(app, teardown_delete_app):
 
 
 def test_delete_application(create_app, app):
+    """
+    В аргументах test_delete_application важна последовательность указания фикстур
+    сначала приложение создается, затем открывается профиль
+    Если профиль открывается до создания приложения, то в списке приложений его не будет
+    По возможности необходимо переработать
+    """
     app_instance = create_app
 
     app.profile.go_to_application(app_instance)
