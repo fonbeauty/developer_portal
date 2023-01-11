@@ -12,7 +12,6 @@ from model.models import StandConfig
 class HowToUse(BaseDriver):
     _page_url = 'base_url/how-to-use/aboutx'
 
-    _COOCKIE_BTN = 'div.cookie > div > div > div.cookie__btn > div'
     _CONTACTS_BTN = 'a.docMenu__item-link[href="/how-to-use/contacts"]'
     _HELP_TITLE = '.offer__title'
     # _CONTACTS_TITLE = "//div/h1[text()='Контакты']"
@@ -39,9 +38,6 @@ class HowToUse(BaseDriver):
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = f'{config.urls.base_url}/how-to-use/about'
         super().__init__(driver)
-
-    def cookie_informing_close(self):
-        return self.wait_element(self._COOCKIE_BTN).click()
 
     def contacts_link_click(self):
         self.wait_element(self._CONTACTS_BTN).click()

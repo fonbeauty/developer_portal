@@ -15,6 +15,7 @@ class Main(BaseDriver):
     _USER_MENU_BLOCK = '#user_menu_block .dropdown__orgMenu.orgMenu'
     _HELP_HEADER_LINK = '.header__dropdown--element.text-link'
     _HELP_FOOTER_LINK = 'a[href$="/how-to-use"].footer__navigation-item'
+    _COOKIE_BTN = '.cookie__btn .btn'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = config.urls.base_url
@@ -55,3 +56,6 @@ class Main(BaseDriver):
 
     def help_footer_link_click(self):
         self.wait_element(self._HELP_FOOTER_LINK).click()
+
+    def cookie_informing_close(self):
+        return self.wait_element(self._COOKIE_BTN).click()
