@@ -19,7 +19,6 @@ def portal_session(driver_cookie: dict) -> PortalSession:
 @pytest.fixture(scope='function')
 def app(authorization: ApplicationManager) -> ApplicationManager:
     authorization.profile.open()
-    authorization.profile.cookie_panel_close()
     return authorization
 
 

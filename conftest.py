@@ -106,6 +106,7 @@ def driver_cookie(driver: WebDriver) -> dict:
 def authorization(driver: WebDriver, driver_cookie) -> ApplicationManager:
     _app = ApplicationManager(driver, CONFIG)
     _app.main_page.open()
+    _app.main_page.cookie_informing_close()
     _app.main_page.set_cookie(driver_cookie)
     return _app
 
