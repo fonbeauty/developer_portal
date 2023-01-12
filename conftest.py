@@ -1,4 +1,5 @@
 import pytest
+import requests
 
 from selenium import webdriver
 from selenium.common import TimeoutException
@@ -13,6 +14,7 @@ from model.application_manager import ApplicationManager
 from model.models import StandConfig
 from utils import file
 from utils.file import path_for_resources
+from bs4 import BeautifulSoup
 
 CONFIG: StandConfig
 
@@ -77,10 +79,51 @@ def driver(request) -> WebDriver:
 
 
 @pytest.fixture(scope='function')
+def admin_cookie(driver: WebDriver) -> dict:
+    stand = CONFIG.stand
+    admin = CONFIG.users.admin
+    admin_cookie = file.cookie_read(stand, admin.login)
+
+    if admin_cookie is None or file.cookie_expired(stand, admin.login, CONFIG.timeouts.cookie_expire):
+        response = requests.get(
+            url=f'{CONFIG.urls.base_url}/user/login',
+            verify=False
+        )
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+        form_build_id = soup.select('input[name=form_build_id]')[1]['value']
+
+        request_body = {
+            'name': f'{CONFIG.users.admin.login}',
+            'pass': f'{CONFIG.users.admin.password}',
+            'form_build_id': f'{form_build_id}',
+            'form_id': 'user_login_form',
+            'op': 'Log in'
+        }
+        response = requests.post(
+            url=f'{CONFIG.urls.base_url}/user/login',
+            data=request_body,
+            headers={'Content-Type': 'application/x-www-form-urlencoded'},
+            verify=False
+        )
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        assert soup.select('#toolbar-item-user'), 'Не удалось залогиниться администратором'
+
+        admin_cookie = dict(name=f'{response.cookies.keys()[0]}', value=f'{response.cookies.values()[0]}')
+
+        file.cookie_write(stand, admin.login, admin_cookie)
+
+    return admin_cookie
+
+
+@pytest.fixture(scope='function')
 def driver_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
     developer = CONFIG.users.developer
     developer_cookie = file.cookie_read(stand, developer.login)
+
     if developer_cookie is None or file.cookie_expired(stand, developer.login, CONFIG.timeouts.cookie_expire):
         driver.get(url=CONFIG.urls.base_url)
 
@@ -96,13 +139,12 @@ def driver_cookie(driver: WebDriver) -> dict:
 
         developer_cookie = driver.get_cookies()[0]
         file.cookie_write(stand, developer.login, developer_cookie)
-        return developer_cookie
-    else:
-        return developer_cookie
+
+    return developer_cookie
 
 
 @pytest.fixture(scope='function')
-def authorization(driver: WebDriver, driver_cookie) -> ApplicationManager:
+def authorization(admin_cookie: dict, driver: WebDriver, driver_cookie: dict) -> ApplicationManager:
     _app = ApplicationManager(driver, CONFIG)
     _app.main_page.open()
     _app.main_page.cookie_informing_close()
