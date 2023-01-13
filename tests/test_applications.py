@@ -2,8 +2,9 @@ import logging
 
 import pytest
 
+from common import admin_api
 from common.application import Application
-from common.sessions import PortalSession
+from common.sessions import BaseSession
 from conftest import CONFIG
 from model.application_manager import ApplicationManager
 
@@ -11,8 +12,14 @@ LOGGER = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
-def portal_session(driver_cookie: dict) -> PortalSession:
-    session = PortalSession(driver_cookie)
+def user_session(driver_cookie: dict) -> BaseSession:
+    session = BaseSession(driver_cookie)
+    return session
+
+
+@pytest.fixture(scope='function')
+def admin_session(admin_cookie: dict) -> BaseSession:
+    session = BaseSession(admin_cookie)
     return session
 
 
@@ -23,20 +30,23 @@ def app(authorization: ApplicationManager) -> ApplicationManager:
 
 
 @pytest.fixture(scope='function')
-def teardown_delete_app(portal_session: PortalSession) -> Application:
+def teardown_delete_app(user_session: BaseSession, admin_session: BaseSession) -> Application:
     application = Application(CONFIG)
 
     yield application
 
-    application.delete(portal_session)
+    application.delete(user_session)
+    admin_api.get_logs(admin_session, CONFIG)
 
 
 @pytest.fixture(scope='function')
-def create_app(portal_session: PortalSession) -> Application:
+def create_app(user_session: BaseSession, admin_session: BaseSession) -> Application:
     application = Application(CONFIG)\
-        .create(portal_session)
+        .create(user_session)
 
     yield application
+
+    admin_api.get_logs(admin_session, CONFIG)
 
 
 def test_create_application(app, teardown_delete_app):
@@ -50,7 +60,7 @@ def test_create_application(app, teardown_delete_app):
     teardown_delete_app.app_href = app.create_application.get_created_application_href()
     assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
     assert app.create_application.download_cert_btn()
-    # olol = app.create_application.client_id()
+    olol = app.create_application.client_id()
     assert app.create_application.client_id()
     assert app.create_application.client_secret()
     LOGGER.info(f'Создано приложение {teardown_delete_app.app_href}')
@@ -58,6 +68,12 @@ def test_create_application(app, teardown_delete_app):
 
 
 def test_delete_application(create_app, app):
+    """
+    В аргументах test_delete_application важна последовательность указания фикстур
+    сначала приложение создается, затем открывается профиль
+    Если профиль открывается до создания приложения, то в списке приложений его не будет
+    По возможности необходимо переработать
+    """
     app_instance = create_app
 
     app.profile.go_to_application(app_instance)

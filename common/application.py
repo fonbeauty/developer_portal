@@ -3,7 +3,7 @@ import uuid
 
 from bs4 import BeautifulSoup
 
-from common.sessions import PortalSession
+from common.sessions import BaseSession
 from model.models import StandConfig
 
 LOGGER = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ class Application:
         self.app_name = name
         self.app_href = app_href
 
-    def create(self, session: PortalSession):
+    def create(self, session: BaseSession):
         with session as s:
             response = s.get(
                 url=f'{self.CONFIG.urls.base_url}/profile/{self.CONFIG.users.developer.space}/app/create'
@@ -59,7 +59,7 @@ class Application:
             LOGGER.info(f'Создано приложение {self.app_href}')
         return self
 
-    def delete(self, session: PortalSession):
+    def delete(self, session: BaseSession):
         with session as s:
             response = s.get(
                 url=f'{self.app_href}/delete'

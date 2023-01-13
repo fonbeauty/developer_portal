@@ -58,4 +58,4 @@ class Main(BaseDriver):
         self.wait_element(self._HELP_FOOTER_LINK).click()
 
     def cookie_informing_close(self):
-        return self.wait_element(self._COOKIE_BTN).click()
+        return self.wait_element(self._COOKIE_BTN, timeout=3).click()
