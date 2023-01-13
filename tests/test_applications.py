@@ -3,6 +3,7 @@ import logging
 import pytest
 
 from common import admin_api
+from common.allure_labels import allure_labels
 from common.application import Application
 from common.sessions import BaseSession
 from conftest import CONFIG
@@ -50,13 +51,15 @@ def create_app(user_session: BaseSession, admin_session: BaseSession) -> Applica
 
 
 def test_create_application(app, teardown_delete_app):
+    allure_labels(feature='Работа с приложениями',
+                  story='Создание приложения',
+                  title='Успешное создание приложения')
     app.profile.open_create_application()
     (
         app.create_application
             .fill_form()
             .submit()
     )
-
     teardown_delete_app.app_href = app.create_application.get_created_application_href()
     assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
     assert app.create_application.download_cert_btn()
@@ -69,11 +72,14 @@ def test_create_application(app, teardown_delete_app):
 
 def test_delete_application(create_app, app):
     """
-    В аргументах test_delete_application важна последовательность указания фикстур
+    В ToDo В аргументах test_delete_application важна последовательность указания фикстур
     сначала приложение создается, затем открывается профиль
     Если профиль открывается до создания приложения, то в списке приложений его не будет
     По возможности необходимо переработать
     """
+    allure_labels(feature='Работа с приложениями',
+                  story='Удаление приложения',
+                  title='Успешное удаление приложения')
     app_instance = create_app
 
     app.profile.go_to_application(app_instance)
