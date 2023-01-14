@@ -33,6 +33,12 @@ class Path(BaseModel):
     chromedriver_path: str
 
 
+class Moon(BaseModel):
+    user: str
+    password: str
+    host: str
+
+
 # @dataclass
 class StandConfig(BaseModel):
 
@@ -42,6 +48,7 @@ class StandConfig(BaseModel):
     defaults: Defaults
     paths: Path
     stand: str
+    moon: Moon
 
     # # implicit_wait_timeout: int
     # # cookie_expire: int
