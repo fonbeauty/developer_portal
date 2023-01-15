@@ -2,12 +2,7 @@ import pytest
 import requests
 
 from selenium import webdriver
-from selenium.common import TimeoutException
 from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 from model.components.login import Login
@@ -161,9 +156,6 @@ def driver_cookie(driver: WebDriver) -> dict:
             Login(driver, CONFIG).login_user1_dev_stand()
         else:
             Login(driver, CONFIG).login_user(login=developer.login, password=developer.password)
-            # wait_element(selector='#username', driver=driver).send_keys(developer.login)
-            # wait_element(selector='#password', driver=driver).send_keys(developer.password)
-            # wait_element(selector='#kc-login', driver=driver).click()
         developer_cookie = driver.get_cookies()[0]
         file.cookie_write(stand, developer.login, developer_cookie)
 
@@ -177,15 +169,6 @@ def authorization(admin_cookie: dict, driver: WebDriver, driver_cookie: dict) ->
     _app.main_page.cookie_informing_close()
     _app.main_page.set_cookie(driver_cookie)
     return _app
-
-
-# def wait_element(selector, driver: WebDriver, timeout=1, by=By.CSS_SELECTOR) -> WebElement:
-#     try:
-#         lolo = WebDriverWait(driver, timeout).until(EC.visibility_of_element_located((by, selector)))
-#         return lolo
-#     except TimeoutException:
-#         # driver.save_screenshot(f'{driver.session_id}.png')
-#         raise AssertionError(f'Не дождался видимости элемента {selector}')
 
 
 if __name__ == '__main__':

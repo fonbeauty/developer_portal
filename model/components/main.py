@@ -34,17 +34,8 @@ class Main(BaseDriver):
     def profile_link_text(self) -> str:
         return self.profile_link().text
 
-    # def catalog_link(self) -> WebElement:
-    #     return self.wait_element(self._CATALOG_LINK)
-
-    # def catalog_link_click(self) -> None:
-    #     self.wait_element(self._CATALOG_LINK).click()
-
     def open_catalog(self) -> None:
         self.wait_element(self._CATALOG_LINK).click()
-
-    # def organization_link(self) -> WebElement:
-    #     return self.wait_element(self._SPACE_LINK_ORG)
 
     def open_user_menu(self):
         self.profile_link().click()
