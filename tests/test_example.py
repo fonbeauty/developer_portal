@@ -1,3 +1,5 @@
+import time
+
 import pytest
 
 from conftest import CONFIG
@@ -16,8 +18,6 @@ def test_open_main_page(open_main_page: ApplicationManager):
 
 
 def test_open_organization(open_main_page: ApplicationManager):
-    link = open_main_page.main_page.organization_link()
-    # open_main_page.main_page.open_organization()
     (
         open_main_page.main_page
         .open_user_menu()
@@ -98,14 +98,3 @@ def test_download_swagger(open_main_page: ApplicationManager):
     assert open_main_page.swagger.servers_section()
     assert open_main_page.swagger.operation_section()
     assert open_main_page.swagger.schemas_section()
-
-
-
-
-
-
-
-
-
-
-

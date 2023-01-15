@@ -10,6 +10,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
+from model.components.login import Login
+from model.components.main import Main
 from utils.load_config_data import get_config
 from model.application_manager import ApplicationManager
 from model.models import StandConfig
@@ -153,20 +155,15 @@ def driver_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
     developer = CONFIG.users.developer
     developer_cookie = file.cookie_read(stand, developer.login)
-
     if developer_cookie is None or file.cookie_expired(stand, developer.login, CONFIG.timeouts.cookie_expire):
-        driver.get(url=CONFIG.urls.base_url)
-
-        wait_element(selector='#edit-openid-connect-client-keycloak-login', driver=driver).click()
+        Main(driver, CONFIG).open().login_link_click()
         if stand == 'dev':
-            wait_element(selector='label[for="edit-user-user1-6787-zxiswexamplesparta"].radioBtn-checkmark',
-                         driver=driver).click()
-            wait_element(selector='#edit-login', driver=driver).click()
+            Login(driver, CONFIG).login_user1_dev_stand()
         else:
-            wait_element(selector='#username', driver=driver).send_keys(developer.login)
-            wait_element(selector='#password', driver=driver).send_keys(developer.password)
-            wait_element(selector='#kc-login', driver=driver).click()
-
+            Login(driver, CONFIG).login_user(login=developer.login, password=developer.password)
+            # wait_element(selector='#username', driver=driver).send_keys(developer.login)
+            # wait_element(selector='#password', driver=driver).send_keys(developer.password)
+            # wait_element(selector='#kc-login', driver=driver).click()
         developer_cookie = driver.get_cookies()[0]
         file.cookie_write(stand, developer.login, developer_cookie)
 
@@ -182,13 +179,13 @@ def authorization(admin_cookie: dict, driver: WebDriver, driver_cookie: dict) ->
     return _app
 
 
-def wait_element(selector, driver: WebDriver, timeout=1, by=By.CSS_SELECTOR) -> WebElement:
-    try:
-        lolo = WebDriverWait(driver, timeout).until(EC.visibility_of_element_located((by, selector)))
-        return lolo
-    except TimeoutException:
-        # driver.save_screenshot(f'{driver.session_id}.png')
-        raise AssertionError(f'Не дождался видимости элемента {selector}')
+# def wait_element(selector, driver: WebDriver, timeout=1, by=By.CSS_SELECTOR) -> WebElement:
+#     try:
+#         lolo = WebDriverWait(driver, timeout).until(EC.visibility_of_element_located((by, selector)))
+#         return lolo
+#     except TimeoutException:
+#         # driver.save_screenshot(f'{driver.session_id}.png')
+#         raise AssertionError(f'Не дождался видимости элемента {selector}')
 
 
 if __name__ == '__main__':
