@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 from utils.load_config_data import get_config
 from model.application_manager import ApplicationManager
@@ -35,6 +36,16 @@ def pytest_addoption(parser):
         '--stand',
         help='stand to run tests'
     )
+    parser.addoption(
+        '--remote',
+        action='store_true',
+        help='if --remote, tests run on remote server moon',
+    )
+    parser.addoption(
+        '--browser_version',
+        default='104.0',
+        help='browser version to run tests',
+    )
     pass
 
 
@@ -60,22 +71,41 @@ def driver(request) -> WebDriver:
     headless = request.config.getoption('--headless')
     if selected_browser == 'chrome':
         options = webdriver.ChromeOptions()
-        if headless:
-            options.headless = True
         options.accept_insecure_certs = True
         options.page_load_strategy = 'normal'
-        prefs = {'download.default_directory': path_for_resources()}
-        options.add_experimental_option("prefs", prefs)
-        _driver = webdriver.Chrome(
-            executable_path=CONFIG.paths.chromedriver_path,
-            options=options
-        )
+        if request.config.getoption('--remote'):
+            capabilities = {
+                'browserName': 'chrome',
+                'browserVersion': request.config.getoption('--browser_version'),
+                'moon:options': {
+                    'enableVNC': True,
+                },
+                'goog:chromeOptions': {
+                    'args': ['no-sandbox', 'start-maximized']
+                }
+            }
+            hub = f'http://{CONFIG.moon.user}:{CONFIG.moon.password}@{CONFIG.moon.host}/wd/hub'
+            _driver = webdriver.Remote(
+                command_executor=RemoteConnection(hub),
+                desired_capabilities=capabilities,
+                options=options
+            )
+            pass
+        else:
+            if headless:
+                options.headless = True
+            prefs = {'download.default_directory': path_for_resources()}
+            options.add_experimental_option('prefs', prefs)
+            _driver = webdriver.Chrome(
+                executable_path=CONFIG.paths.chromedriver_path,
+                options=options
+            )
     elif selected_browser == 'safari':
         _driver = webdriver.Safari()
 
     yield _driver
 
-    _driver.close()
+    _driver.quit()
 
 
 @pytest.fixture(scope='function')
