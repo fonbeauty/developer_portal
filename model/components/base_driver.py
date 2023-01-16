@@ -15,6 +15,7 @@ class BaseDriver:
 
     def open(self):
         self.driver.get(self._page_url)
+        return self
 
     def wait_element(self, selector, timeout=1, by=By.CSS_SELECTOR) -> WebElement:
         try:

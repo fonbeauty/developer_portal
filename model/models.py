@@ -6,13 +6,13 @@ class User(BaseModel):
     login: str
     password: str
     description: str
-    session: str
     space: str
 
 
 # @dataclass()
 class Users(BaseModel):
     developer: User
+    admin: User
 
 
 class Timeouts(BaseModel):
@@ -26,10 +26,17 @@ class Urls(BaseModel):
 
 class Defaults(BaseModel):
     password: str
+    session: str
 
 
 class Path(BaseModel):
     chromedriver_path: str
+
+
+class Moon(BaseModel):
+    user: str
+    password: str
+    host: str
 
 
 # @dataclass
@@ -41,6 +48,7 @@ class StandConfig(BaseModel):
     defaults: Defaults
     paths: Path
     stand: str
+    moon: Moon
 
     # # implicit_wait_timeout: int
     # # cookie_expire: int

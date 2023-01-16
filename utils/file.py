@@ -14,23 +14,23 @@ def path_for_cookies(file_name='') -> str:
     return path
 
 
-def cookie_write(stand: str, user_session_id: str, cookie: dict):
+def cookie_write(stand: str, user: str, cookie: dict):
     cookie['creation_time'] = str(datetime.now())
-    with open(path_for_cookies(f'{stand}_{user_session_id}.txt'), 'w') as file:
+    with open(path_for_cookies(f'{stand}_{user}.txt'), 'w') as file:
         json.dump(cookie, file)
 
 
-def cookie_read(stand: str, user_session_id: str) -> dict:
+def cookie_read(stand: str, user: str) -> dict:
     try:
-        with open(path_for_cookies(f'{stand}_{user_session_id}.txt'), 'r') as json_file:
+        with open(path_for_cookies(f'{stand}_{user}.txt'), 'r') as json_file:
             data = json.load(json_file)
         return data
     except FileNotFoundError:
         return None
 
 
-def cookie_expired(stand: str, user_session_id: str, expire_time: int) -> bool:
-    creation_time_string = (cookie_read(stand, user_session_id).get('creation_time'))
+def cookie_expired(stand: str, user: str, expire_time: int) -> bool:
+    creation_time_string = (cookie_read(stand, user).get('creation_time'))
     format_datetime = "%Y-%m-%d %H:%M:%S.%f"
     creation_time = datetime.strptime(creation_time_string, format_datetime)
     current_time = datetime.now()
