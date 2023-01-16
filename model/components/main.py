@@ -9,6 +9,7 @@ class Main(BaseDriver):
 
     _page_url = 'base_url'
 
+    _LOGIN_LINK = '#edit-openid-connect-client-keycloak-login'
     _PROFILE_LINK = '.profile__link'
     _CATALOG_LINK = 'a[href="/catalog"].text-link'
     _SPACE_LINK_ORG = '.currentOrg__name a'
@@ -24,23 +25,17 @@ class Main(BaseDriver):
     def set_cookie(self, cookie: dict):
         self.driver.add_cookie(cookie)
 
+    def login_link_click(self) -> None:
+        return self.wait_element(self._LOGIN_LINK).click()
+
     def profile_link(self) -> WebElement:
         return self.wait_element(self._PROFILE_LINK)
 
     def profile_link_text(self) -> str:
         return self.profile_link().text
 
-    def catalog_link(self) -> WebElement:
-        return self.wait_element(self._CATALOG_LINK)
-
-    def catalog_link_click(self) -> None:
-        self.catalog_link().click()
-
     def open_catalog(self) -> None:
-        self.catalog_link_click()
-
-    def organization_link(self) -> WebElement:
-        return self.wait_element(self._SPACE_LINK_ORG)
+        self.wait_element(self._CATALOG_LINK).click()
 
     def open_user_menu(self):
         self.profile_link().click()
@@ -48,7 +43,7 @@ class Main(BaseDriver):
         return self
 
     def open_organization(self):
-        self.organization_link().click()
+        self.wait_element(self._SPACE_LINK_ORG).click()
         return self
 
     def help_header_link_click(self):
