@@ -1,5 +1,8 @@
+import logging
+
 import pytest
 import requests
+from pydantic import ValidationError
 
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -15,6 +18,7 @@ from utils.file import path_for_resources
 from bs4 import BeautifulSoup
 
 CONFIG: StandConfig
+LOGGER = logging.getLogger(__name__)
 
 
 def pytest_addoption(parser):
@@ -49,7 +53,12 @@ def pytest_addoption(parser):
 def pytest_sessionstart(session: pytest.Session):
     global CONFIG
     stand = session.config.getoption('--stand')
-    CONFIG = get_config(stand)
+    try:
+        CONFIG = get_config(stand)
+    except ValidationError:
+        msg = 'Не удалось загрузить конфиг, выполнение тестов прервано'
+        LOGGER.exception(msg)
+        pytest.exit(msg=msg, returncode=7)
     pass
 
 
