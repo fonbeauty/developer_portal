@@ -5,6 +5,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from model.components.base_driver import BaseDriver
 from model.models import StandConfig
+from uuid import UUID
 
 
 class CreateApplication(BaseDriver):
@@ -24,6 +25,7 @@ class CreateApplication(BaseDriver):
     _CLIENT_ID = '#clientId_key'
     _CLIENT_SECRET = '#clientSecretGetNew__key'
     _DOWNLOAD_CERT = '[name=download_cert]'
+    _KEY_SHOW_BTN = 'div.actionBtn.actionBtn-show.clientSecret__key-show-btn'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}/app/create'
@@ -93,3 +95,15 @@ class CreateApplication(BaseDriver):
     def download_cert(self) -> None:
         self.download_cert_btn().click()
 
+    def is_valid_uuid(self, uuid_to_test, version=4) -> bool:
+        try:
+            UUID(uuid_to_test, version=version)
+        except ValueError:
+            return False
+        return True
+
+    def client_secret_input_type(self) -> str:
+        return self.client_secret_element().get_attribute('type')
+
+    def show_client_secret_btn_click(self) -> None:
+        self.wait_element(self._KEY_SHOW_BTN).click()
