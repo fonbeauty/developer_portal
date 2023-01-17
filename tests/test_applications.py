@@ -66,18 +66,10 @@ def test_create_application(app, teardown_delete_app):
     assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
     assert app.create_application.download_cert_btn()
     olol = app.create_application.client_id()
-    client_id = app.create_application.client_id()
-    client_secret = app.create_application.client_secret()
-    assert app.create_application.is_valid_uuid(client_id), 'client_id не соответствует формату uuid'
-    assert app.create_application.is_valid_uuid(client_secret), 'client_secret не соответствует формату uuid'
-    assert app.create_application.client_secret_element().get_attribute('type') == 'password', 'После создания ' \
-                                                                                               'приложения, ' \
-                                                                                               'client_secret не ' \
-                                                                                               'скрыт точками '
-    app.create_application.key_show_btn_click()
-    assert app.create_application.client_secret_element().get_attribute('type') == 'text', 'После нажатия на кнопку ' \
-                                                                                           '"глаз" client_secret ' \
-                                                                                           'скрыт точками '
+    assert app.create_application.client_id_check_for_uuid(), 'client_id не соответствует формату uuid'
+    assert app.create_application.client_secret_check_for_uuid(), 'client_secret не соответствует формату uuid'
+    assert app.create_application.client_secret_type() == 'password', 'После создания приложения, client_secret не скрыт точками'
+    assert app.create_application.show_client_secret_btn_click() == 'text', 'После нажатия на кнопку "глаз" client_secret скрыт точками '
     LOGGER.info(f'Создано приложение {teardown_delete_app.app_href}')
     pass
 

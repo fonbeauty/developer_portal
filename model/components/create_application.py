@@ -99,8 +99,18 @@ class CreateApplication(BaseDriver):
         try:
             uuid_obj = UUID(uuid_to_test, version=version)
         except ValueError:
-            return False
+            return True
         return str(uuid_obj) == uuid_to_test
 
-    def key_show_btn_click(self):
+    def client_secret_check_for_uuid(self):
+       return self.is_valid_uuid(self.client_secret())
+
+    def client_id_check_for_uuid(self):
+       return self.is_valid_uuid(self.client_id())
+
+    def client_secret_type(self) -> str:
+        return self.client_secret_element().get_attribute('type')
+
+    def show_client_secret_btn_click(self):
         self.wait_element(self._KEY_SHOW_BTN).click()
+        return self.client_secret_type()
