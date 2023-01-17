@@ -1,5 +1,5 @@
 urls:
-  base_url: url
+  base_url: https://somehost.ru
 
 timeouts:
   implicit_timeout: 1
@@ -7,15 +7,28 @@ timeouts:
 
 users:
   developer:
+    role: role
     login: login
-    password: pass
-    description: пользователь с ролью разработчик
-    session: session
+    password: password
+    description: description
     space: space
-    space_port_2001: space_port_2001
+    id: 201
+  admin:
+    role: role
+    login: login
+    password: password
+    description: description
+    space: None
+    id: 135
 
-default_password:
-  create_application: pass
+defaults:
+  password: password
+  session: session
 
 paths:
-  chromedriver_path: path_ti_chromdriver
+  chromedriver_path: path
+
+moon:
+  user: user
+  password: password
+  host: host
