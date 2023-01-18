@@ -2,6 +2,7 @@ import time
 
 import pytest
 
+from common.allure_labels import allure_labels
 from conftest import CONFIG
 from model.application_manager import ApplicationManager
 
@@ -13,11 +14,17 @@ def open_main_page(authorization: ApplicationManager) -> ApplicationManager:
 
 
 def test_open_main_page(open_main_page: ApplicationManager):
+    allure_labels(feature='Начальная страница портала',
+                  story='Авторизация на портале',
+                  title='Успешная авторизация')
     assert open_main_page.main_page.profile_link_text() == CONFIG.users.developer.login, 'Ссылка профиля не найдена'
     pass
 
 
 def test_open_organization(open_main_page: ApplicationManager):
+    allure_labels(feature='Страница организации',
+                  story='Переход на страницу организации',
+                  title='Успешный переход на страницу организации')
     (
         open_main_page.main_page
         .open_user_menu()
@@ -30,6 +37,9 @@ def test_open_organization(open_main_page: ApplicationManager):
 
 
 def test_open_catalog(open_main_page: ApplicationManager):
+    allure_labels(feature='Каталог сервисов',
+                  story='Переход в раздел "Каталог сервисов"',
+                  title='Успешный переход в раздел "Каталог сервисов"')
 
     open_main_page.main_page.open_catalog()
 
@@ -40,6 +50,9 @@ def test_open_catalog(open_main_page: ApplicationManager):
 
 
 def test_search_services(open_main_page: ApplicationManager):
+    allure_labels(feature='Каталог сервисов',
+                  story='Поиск продукта через поисковую строку',
+                  title='Успешный поиск продукта через поисковую строку"')
 
     open_main_page.main_page.open_catalog()
     random_product = open_main_page.catalog.random_product_card()
@@ -57,6 +70,9 @@ def test_search_services(open_main_page: ApplicationManager):
 
 
 def test_open_product(open_main_page: ApplicationManager):
+    allure_labels(feature='Каталог сервисов',
+                  story='Открытие карточки продукта',
+                  title='Успешное открытие карточки продукта')
 
     open_main_page.main_page.open_catalog()
     product = open_main_page.catalog.random_product_card()
@@ -70,6 +86,9 @@ def test_open_product(open_main_page: ApplicationManager):
 
 
 def test_open_swagger(open_main_page: ApplicationManager):
+    allure_labels(feature='Каталог сервисов',
+                  story='Переход с карточки продукта на страницу скачивания swagger',
+                  title='Успешный переход на страницу скачивания swagger')
 
     open_main_page.main_page.open_catalog()
     product = open_main_page.catalog.random_product_card()
@@ -85,6 +104,9 @@ def test_open_swagger(open_main_page: ApplicationManager):
 
 
 def test_download_swagger(open_main_page: ApplicationManager):
+    allure_labels(feature='Каталог сервисов',
+                  story='Скачивание swagger',
+                  title='Успешное скачивание swagger')
 
     open_main_page.main_page.open_catalog()
     product = open_main_page.catalog.random_product_card()
@@ -93,7 +115,6 @@ def test_download_swagger(open_main_page: ApplicationManager):
     open_main_page.swagger.download_swagger()
 
     pass
-
     assert open_main_page.swagger.title_section()
     assert open_main_page.swagger.servers_section()
     assert open_main_page.swagger.operation_section()
