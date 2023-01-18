@@ -1,6 +1,5 @@
 import logging
 import pytest
-import requests
 
 from pydantic import ValidationError
 from selenium import webdriver
@@ -8,7 +7,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 from requests.exceptions import HTTPError
 
-
+from common import admin_api
 from model.components.login import Login
 from model.components.main import Main
 from utils.load_config_data import get_config
@@ -16,7 +15,6 @@ from model.application_manager import ApplicationManager
 from model.models import StandConfig
 from utils import file
 from utils.file import path_for_resources
-from bs4 import BeautifulSoup
 
 CONFIG: StandConfig
 LOGGER = logging.getLogger(__name__)
@@ -129,42 +127,10 @@ def admin_cookie(driver: WebDriver) -> dict:
     if admin_cookie is None or file.cookie_expired(stand, admin.login, CONFIG.timeouts.cookie_expire):
         LOGGER.info('Срок действия cookie админа истек или отсутствует файл с cookie')
         try:
-            response = requests.get(
-                url=f'{CONFIG.urls.base_url}/user/login',
-                verify=False
-            )
-            response.raise_for_status()
-        # except HTTPError:
-        #     msg = 'Ошибка получения формы логина'
-        #     LOGGER.exception(msg)
-        #     pytest.exit(msg, returncode=7)
-
-            soup = BeautifulSoup(response.text, 'html.parser')
-            form_build_id = soup.select('input[name=form_build_id]')[1]['value']
-
-            request_body = {
-                'name': f'{CONFIG.users.admin.login}',
-                'pass': f'{CONFIG.users.admin.password}',
-                'form_build_id': f'{form_build_id}',
-                'form_id': 'user_login_form',
-                'op': 'Log in'
-        }
-        # try:
-            response = requests.post(
-                url=f'{CONFIG.urls.base_url}/user/login',
-                data=request_body,
-                headers={'Content-Type': 'application/x-www-form-urlencoded'},
-                verify=False
-            )
-            response.raise_for_status()
-            soup = BeautifulSoup(response.text, 'html.parser')
-            assert soup.select('#toolbar-item-user'), 'Не удалось залогиниться администратором'
-        except (HTTPError, AssertionError) as e:
-            msg = f'Ошибка логина {e}'
-            LOGGER.exception(msg)
-            pytest.exit(msg, returncode=7)
+            admin_cookie = admin_api.get_admin_cookie(CONFIG)
+        except (HTTPError, AssertionError):
+            pytest.exit('Ошибка логина администратором. Выполнение тестов прекращено', returncode=7)
         else:
-            admin_cookie = dict(name=f'{response.cookies.keys()[0]}', value=f'{response.cookies.values()[0]}')
             file.cookie_write(stand, admin.login, admin_cookie)
             LOGGER.info('Cookie админа успешно обновлена')
     return admin_cookie
