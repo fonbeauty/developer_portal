@@ -98,7 +98,6 @@ def driver(request) -> WebDriver:
                 desired_capabilities=capabilities,
                 options=options
             )
-            LOGGER.info('Удаленный запуск в Moon')
             pass
         else:
             if headless:
@@ -109,7 +108,6 @@ def driver(request) -> WebDriver:
                 executable_path=CONFIG.paths.chromedriver_path,
                 options=options
             )
-            LOGGER.info(f'Локальный запуск, headless={headless}')
     elif selected_browser == 'safari':
         _driver = webdriver.Safari()
 
@@ -142,14 +140,23 @@ def driver_cookie(driver: WebDriver) -> dict:
     developer = CONFIG.users.developer
     developer_cookie = file.cookie_read(stand, developer.login)
     if developer_cookie is None or file.cookie_expired(stand, developer.login, CONFIG.timeouts.cookie_expire):
-        Main(driver, CONFIG).open().login_link_click()
-        if stand == 'dev':
-            Login(driver, CONFIG).login_user1_dev_stand()
+        LOGGER.info('Срок действия cookie пользователя истек или отсутствует файл cookie')
+        try:
+            Main(driver, CONFIG).open().login_link_click()
+            if stand == 'dev':
+                Login(driver, CONFIG).login_user1_dev_stand()
+            else:
+                Login(driver, CONFIG).login_user(login=developer.login, password=developer.password)
+            if Main(driver, CONFIG).open().profile_link_text() != CONFIG.users.developer.login:
+                raise AssertionError('Ошибка логина пользователя')
+        except AssertionError:
+            msg = 'Пользователю не удалось залогиниться. Выполнение тестов прекращено'
+            LOGGER.exception(f'{msg}')
+            pytest.exit(msg, returncode=7)
         else:
-            Login(driver, CONFIG).login_user(login=developer.login, password=developer.password)
-        developer_cookie = driver.get_cookies()[0]
-        file.cookie_write(stand, developer.login, developer_cookie)
-
+            developer_cookie = driver.get_cookies()[0]
+            file.cookie_write(stand, developer.login, developer_cookie)
+            LOGGER.info('Cookie пользователя успешно обновлена')
     return developer_cookie
 
 
