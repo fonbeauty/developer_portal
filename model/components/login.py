@@ -7,7 +7,7 @@ from model.models import StandConfig
 class Login(BaseDriver):
     _page_url = 'base_url/login'
 
-    _DEV_STAND_SELECT_USER = 'label[for="edit-user-user1-6787-zxiswexamplesparta"].radioBtn-checkmark'
+    _DEV_STAND_SELECT_USER = 'label[for="edit-user-user1-9007-7hr1bexamplesparta"].radioBtn-checkmark'
     _DEV_STAND_LOGIN_BTN = '#edit-login'
 
     _USERNAME = '#username'

@@ -8,7 +8,6 @@ from common.application import Application
 from common.sessions import BaseSession
 from conftest import CONFIG
 from model.application_manager import ApplicationManager
-from uuid import UUID
 
 LOGGER = logging.getLogger(__name__)
 

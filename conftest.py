@@ -1,10 +1,13 @@
+import logging
 import pytest
-import requests
 
+from pydantic import ValidationError
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.remote.remote_connection import RemoteConnection
+from requests.exceptions import HTTPError
 
+from common import admin_api
 from model.components.login import Login
 from model.components.main import Main
 from utils.load_config_data import get_config
@@ -12,9 +15,9 @@ from model.application_manager import ApplicationManager
 from model.models import StandConfig
 from utils import file
 from utils.file import path_for_resources
-from bs4 import BeautifulSoup
 
 CONFIG: StandConfig
+LOGGER = logging.getLogger(__name__)
 
 
 def pytest_addoption(parser):
@@ -49,7 +52,14 @@ def pytest_addoption(parser):
 def pytest_sessionstart(session: pytest.Session):
     global CONFIG
     stand = session.config.getoption('--stand')
-    CONFIG = get_config(stand)
+    try:
+        CONFIG = get_config(stand)
+    except ValidationError:
+        msg = 'Не удалось загрузить конфиг, выполнение тестов прервано'
+        LOGGER.exception(msg)
+        pytest.exit(msg=msg, returncode=7)
+    else:
+        LOGGER.info(f'Конфигурация стенда {stand} успешно загружена')
     pass
 
 
@@ -66,11 +76,12 @@ def portal_session():
 def driver(request) -> WebDriver:
     selected_browser = request.config.getoption('--browser')
     headless = request.config.getoption('--headless')
+    remote = request.config.getoption('--remote')
     if selected_browser == 'chrome':
         options = webdriver.ChromeOptions()
         options.accept_insecure_certs = True
         options.page_load_strategy = 'normal'
-        if request.config.getoption('--remote'):
+        if remote:
             capabilities = {
                 'browserName': 'chrome',
                 'browserVersion': request.config.getoption('--browser_version'),
@@ -112,36 +123,14 @@ def admin_cookie(driver: WebDriver) -> dict:
     admin_cookie = file.cookie_read(stand, admin.login)
 
     if admin_cookie is None or file.cookie_expired(stand, admin.login, CONFIG.timeouts.cookie_expire):
-        response = requests.get(
-            url=f'{CONFIG.urls.base_url}/user/login',
-            verify=False
-        )
-        response.raise_for_status()
-
-        soup = BeautifulSoup(response.text, 'html.parser')
-        form_build_id = soup.select('input[name=form_build_id]')[1]['value']
-
-        request_body = {
-            'name': f'{CONFIG.users.admin.login}',
-            'pass': f'{CONFIG.users.admin.password}',
-            'form_build_id': f'{form_build_id}',
-            'form_id': 'user_login_form',
-            'op': 'Log in'
-        }
-        response = requests.post(
-            url=f'{CONFIG.urls.base_url}/user/login',
-            data=request_body,
-            headers={'Content-Type': 'application/x-www-form-urlencoded'},
-            verify=False
-        )
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'html.parser')
-        assert soup.select('#toolbar-item-user'), 'Не удалось залогиниться администратором'
-
-        admin_cookie = dict(name=f'{response.cookies.keys()[0]}', value=f'{response.cookies.values()[0]}')
-
-        file.cookie_write(stand, admin.login, admin_cookie)
-
+        LOGGER.info('Срок действия cookie админа истек или отсутствует файл с cookie')
+        try:
+            admin_cookie = admin_api.get_admin_cookie(CONFIG)
+        except (HTTPError, AssertionError):
+            pytest.exit('Ошибка логина администратором. Выполнение тестов прекращено', returncode=7)
+        else:
+            file.cookie_write(stand, admin.login, admin_cookie)
+            LOGGER.info('Cookie админа успешно обновлена')
     return admin_cookie
 
 
@@ -151,14 +140,23 @@ def driver_cookie(driver: WebDriver) -> dict:
     developer = CONFIG.users.developer
     developer_cookie = file.cookie_read(stand, developer.login)
     if developer_cookie is None or file.cookie_expired(stand, developer.login, CONFIG.timeouts.cookie_expire):
-        Main(driver, CONFIG).open().login_link_click()
-        if stand == 'dev':
-            Login(driver, CONFIG).login_user1_dev_stand()
+        LOGGER.info('Срок действия cookie пользователя истек или отсутствует файл cookie')
+        try:
+            Main(driver, CONFIG).open().login_link_click()
+            if stand == 'dev':
+                Login(driver, CONFIG).login_user1_dev_stand()
+            else:
+                Login(driver, CONFIG).login_user(login=developer.login, password=developer.password)
+            if Main(driver, CONFIG).open().profile_link_text() != CONFIG.users.developer.login:
+                raise AssertionError('Ошибка логина пользователя')
+        except AssertionError:
+            msg = 'Пользователю не удалось залогиниться. Выполнение тестов прекращено'
+            LOGGER.exception(f'{msg}')
+            pytest.exit(msg, returncode=7)
         else:
-            Login(driver, CONFIG).login_user(login=developer.login, password=developer.password)
-        developer_cookie = driver.get_cookies()[0]
-        file.cookie_write(stand, developer.login, developer_cookie)
-
+            developer_cookie = driver.get_cookies()[0]
+            file.cookie_write(stand, developer.login, developer_cookie)
+            LOGGER.info('Cookie пользователя успешно обновлена')
     return developer_cookie
 
 

@@ -1,9 +1,12 @@
+import logging
 import yaml
 
 from pathlib import Path
 from pydantic import ValidationError
 
 from model.models import StandConfig
+
+LOGGER = logging.getLogger(__name__)
 
 
 def load_yml_data(path: str) -> dict:
@@ -22,5 +25,7 @@ def get_config(stand: str) -> StandConfig:
     try:
         stand_config = StandConfig.parse_obj(ymlconfig)
     except ValidationError as e:
-        print(e)
+        LOGGER.exception('Ошибка загрузки конфига')
+        raise e
     return stand_config
+
