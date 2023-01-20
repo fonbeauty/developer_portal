@@ -144,7 +144,11 @@ def driver_cookie(driver: WebDriver) -> dict:
         try:
             Main(driver, CONFIG).open().login_link_click()
             if stand == 'dev':
-                Login(driver, CONFIG).login_user1_dev_stand()
+                login_form = Login(driver, CONFIG)
+                CONFIG.users.developer.login = login_form.get_user_login_from_label()
+                login_form.do_login_user1_dev_stand()
+                CONFIG.users.developer.space = login_form.get_user_space_from_url()
+                pass
             else:
                 Login(driver, CONFIG).login_user(login=developer.login, password=developer.password)
             if Main(driver, CONFIG).open().profile_link_text() != CONFIG.users.developer.login:
@@ -152,6 +156,10 @@ def driver_cookie(driver: WebDriver) -> dict:
         except AssertionError:
             msg = 'Пользователю не удалось залогиниться. Выполнение тестов прекращено'
             LOGGER.exception(f'{msg}')
+            pytest.exit(msg, returncode=7)
+        except Exception as e:
+            msg = 'Непредвиденное исключение при логине пользователя. Выполнение тестов прекращено'
+            LOGGER.exception(f'{msg}: {e}')
             pytest.exit(msg, returncode=7)
         else:
             developer_cookie = driver.get_cookies()[0]
