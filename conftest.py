@@ -60,6 +60,8 @@ def pytest_sessionstart(session: pytest.Session):
         pytest.exit(msg=msg, returncode=7)
     else:
         LOGGER.info(f'Конфигурация стенда {stand} успешно загружена')
+    CONFIG.users.admin.cookie = file.cookie_read(CONFIG.stand, CONFIG.users.admin.login)
+    # CONFIG.users.developer.cookie = file.cookie_read(CONFIG.stand, CONFIG.users.developer.login)
     pass
 
 
@@ -120,18 +122,18 @@ def driver(request) -> WebDriver:
 def admin_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
     admin = CONFIG.users.admin
-    admin_cookie = file.cookie_read(stand, admin.login)
+    # admin_cookie = file.cookie_read(stand, admin.login)
 
-    if admin_cookie is None or file.cookie_expired(stand, admin.login, CONFIG.timeouts.cookie_expire):
+    if len(admin.cookie) == 0 or file.cookie_expired_new(stand, admin, CONFIG.timeouts.cookie_expire):
         LOGGER.info('Срок действия cookie админа истек или отсутствует файл с cookie')
         try:
-            admin_cookie = admin_api.get_admin_cookie(CONFIG)
+            admin.cookie = admin_api.get_admin_cookie(CONFIG)
         except (HTTPError, AssertionError):
             pytest.exit('Ошибка логина администратором. Выполнение тестов прекращено', returncode=7)
         else:
-            file.cookie_write(stand, admin.login, admin_cookie)
+            file.cookie_write(stand, admin.login, admin.cookie)
             LOGGER.info('Cookie админа успешно обновлена')
-    return admin_cookie
+    return admin.cookie
 
 
 @pytest.fixture(scope='function')

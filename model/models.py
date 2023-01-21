@@ -7,6 +7,7 @@ class User(BaseModel):
     password: str
     description: str
     space: str
+    cookie: dict
 
 
 # @dataclass()
@@ -41,7 +42,6 @@ class Moon(BaseModel):
 
 # @dataclass
 class StandConfig(BaseModel):
-
     urls: Urls
     timeouts: Timeouts
     users: Users

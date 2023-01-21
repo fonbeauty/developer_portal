@@ -1,7 +1,8 @@
 import logging
-from typing import List
-
 import requests
+
+from typing import List
+from datetime import datetime
 from bs4 import BeautifulSoup
 from requests import HTTPError, Response
 
@@ -48,6 +49,7 @@ def admin_login(config: StandConfig) -> Response:
 def get_admin_cookie(config: StandConfig) -> dict:
     response = admin_login(config)
     admin_cookie = dict(name=f'{response.cookies.keys()[0]}', value=f'{response.cookies.values()[0]}')
+    admin_cookie['creation_time'] = str(datetime.now())
     return admin_cookie
 
 
