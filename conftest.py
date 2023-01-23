@@ -6,6 +6,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 from requests.exceptions import HTTPError
+from datetime import datetime
 
 from common import admin_api
 from model.components.login import Login
@@ -60,8 +61,6 @@ def pytest_sessionstart(session: pytest.Session):
         pytest.exit(msg=msg, returncode=7)
     else:
         LOGGER.info(f'Конфигурация стенда {stand} успешно загружена')
-    CONFIG.users.admin.cookie = file.cookie_read(CONFIG.stand, CONFIG.users.admin.login)
-    # CONFIG.users.developer.cookie = file.cookie_read(CONFIG.stand, CONFIG.users.developer.login)
     pass
 
 
@@ -122,16 +121,14 @@ def driver(request) -> WebDriver:
 def admin_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
     admin = CONFIG.users.admin
-    # admin_cookie = file.cookie_read(stand, admin.login)
-
-    if len(admin.cookie) == 0 or file.cookie_expired_new(stand, admin, CONFIG.timeouts.cookie_expire):
+    if len(admin.cookie) == 0 or file.is_cookie_expired(stand, admin, CONFIG.timeouts.cookie_expire):
         LOGGER.info('Срок действия cookie админа истек или отсутствует файл с cookie')
         try:
             admin.cookie = admin_api.get_admin_cookie(CONFIG)
         except (HTTPError, AssertionError):
             pytest.exit('Ошибка логина администратором. Выполнение тестов прекращено', returncode=7)
         else:
-            file.cookie_write(stand, admin.login, admin.cookie)
+            admin.cookie['creation_time'] = str(datetime.now())
             LOGGER.info('Cookie админа успешно обновлена')
     return admin.cookie
 
@@ -140,8 +137,7 @@ def admin_cookie(driver: WebDriver) -> dict:
 def driver_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
     developer = CONFIG.users.developer
-    developer_cookie = file.cookie_read(stand, developer.login)
-    if developer_cookie is None or file.cookie_expired(stand, developer.login, CONFIG.timeouts.cookie_expire):
+    if len(developer.cookie) == 0 or file.is_cookie_expired(stand, developer, CONFIG.timeouts.cookie_expire):
         LOGGER.info('Срок действия cookie пользователя истек или отсутствует файл cookie')
         try:
             Main(driver, CONFIG).open().login_link_click()
@@ -164,10 +160,10 @@ def driver_cookie(driver: WebDriver) -> dict:
             LOGGER.exception(f'{msg}: {e}')
             pytest.exit(msg, returncode=7)
         else:
-            developer_cookie = driver.get_cookies()[0]
-            file.cookie_write(stand, developer.login, developer_cookie)
+            developer.cookie = driver.get_cookies()[0]
+            developer.cookie['creation_time'] = str(datetime.now())
             LOGGER.info('Cookie пользователя успешно обновлена')
-    return developer_cookie
+    return developer.cookie
 
 
 @pytest.fixture(scope='function')
