@@ -7,7 +7,7 @@ class User(BaseModel):
     password: str
     description: str
     space: str
-    cookie: dict
+    cookie: dict = {}
 
 
 # @dataclass()
