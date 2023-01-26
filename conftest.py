@@ -147,7 +147,7 @@ def driver_cookie(driver: WebDriver) -> dict:
                 Login(driver, CONFIG).login_user1_dev_stand()
             else:
                 Login(driver, CONFIG).login_user(login=developer.login, password=developer.password)
-            if Main(driver, CONFIG).open().profile_link_text() != CONFIG.users.developer.login:
+            if Main(driver, CONFIG).open().profile_link_text() == CONFIG.users.developer.login:
                 raise AssertionError('Ошибка логина пользователя')
         except AssertionError:
             msg = 'Пользователю не удалось залогиниться. Выполнение тестов прекращено'

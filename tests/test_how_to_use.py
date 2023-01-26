@@ -51,6 +51,9 @@ def test_open_help_contacts(app: ApplicationManager):
 
 
 def test_input_text_search_bar(app: ApplicationManager):
+    allure_labels(feature='Раздел "Помощь"',
+                  story='Запрос в поисковая строка',
+                  title='Успешный запрос в поисковая строка')
     title_name = "Результаты поиска"
     app.help_page.input_text_search_bar(_TEXT)
 

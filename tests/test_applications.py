@@ -1,4 +1,5 @@
 import logging
+import time
 
 import pytest
 
@@ -50,7 +51,7 @@ def create_app(user_session: BaseSession, admin_session: BaseSession) -> Applica
     admin_api.get_logs(admin_session, CONFIG)
 
 
-def test_create_application(app, teardown_delete_app):
+def test_create_application(app: ApplicationManager, teardown_delete_app: Application):
     allure_labels(feature='Работа с приложениями',
                   story='Создание приложения',
                   title='Успешное создание приложения')
@@ -74,7 +75,70 @@ def test_create_application(app, teardown_delete_app):
     app.create_application.show_client_secret_btn_click()
     assert app.create_application.client_secret_input_type() == 'text',\
         'После нажатия на кнопку "глаз" client_secret скрыт точками '
+
+    app_href = f'[href="{teardown_delete_app.app_href}"]'
+    app.create_application.go_to_created_application()
+    app_name = app.create_application.name_app()
+    app.profile.open()
+    app.create_application.open_the_created_app(app_href)
+    assert app.create_application.name_app() == app_name, 'Созданное приложение отсутствует в списке приложений профиля'
+
     LOGGER.info(f'Создано приложение {teardown_delete_app.app_href}')
+    pass
+
+
+def test_revoke_certificate(create_app: Application, app: ApplicationManager, teardown_delete_app: Application):
+    allure_labels(feature='Работа с приложениями',
+                  story='Перевыпуск сертификата',
+                  title='Успешный перевыпуск сертификата')
+    app_instance = create_app
+
+    app.profile.go_to_application(app_instance)
+    app.create_application.open_certificate_page()
+    app.app_revoke_certificate.revoke_certificate_click()
+    app.app_revoke_certificate.radio_btn_revoke_cert_click()
+    app.app_revoke_certificate.edit_revoke_cert_click()
+    app.app_revoke_certificate.issue_new_certificate_click()
+    app.app_revoke_certificate.password_form()
+    app.app_revoke_certificate.submit()
+
+    teardown_delete_app.app_href = app_instance.app_href
+    assert app.app_revoke_certificate.download_cert_btn()
+    assert app.app_revoke_certificate.success_create_text(), 'Нет сообщения "Сертификат готов"'
+    assert app.app_revoke_certificate.success_create_text(), 'Нет сообщения "Сертификат готов"'
+
+    LOGGER.info(f'Сертификат перевыпущен {app.app_revoke_certificate.download_cert_btn()}')
+    pass
+
+
+def test_get_new_client_secret(create_app: Application, app: ApplicationManager, teardown_delete_app: Application):
+    allure_labels(feature='Работа с приложениями',
+                  story='Перевыпуск сертификата',
+                  title='Успешный перевыпуск сертификата')
+    app_instance = create_app
+
+    app.profile.go_to_application(app_instance)
+    app.create_application.open_keys_page()
+    app.app_keys_page.get_new_client_secret_link_click()
+    app.app_keys_page.get_new_client_secret_btn_click()
+    time.sleep(1)
+    '''
+     time.sleep(1) необходим для дальнейших действий с assert.
+     Если убрать задержку, поле с client_secret не успевает появиться
+     и асерты не выполняются, в переменную client_secret не попадает ни какого значения
+     и возникает ошибка AttributeError: 'NoneType' object has no attribute 'get_attribute'.
+     Идей как исправить нет.
+    '''
+    teardown_delete_app.app_href = app_instance.app_href
+    client_secret = app.app_keys_page.client_secret()
+    assert app.app_keys_page.is_valid_uuid(client_secret), 'client_id не соответствует формату uuid'
+    assert app.app_keys_page.client_secret_input_type() == 'password', \
+        'После перевыпуска client_secret , он не скрыт точками'
+    app.app_keys_page.show_client_secret_btn_click()
+    assert app.app_keys_page.client_secret_input_type() == 'text', \
+        'После нажатия на кнопку "глаз" client_secret скрыт точками '
+
+    LOGGER.info(f'Client_secret перевыпущен {app.app_keys_page.client_secret()}')
     pass
 
 
