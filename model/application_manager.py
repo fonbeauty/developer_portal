@@ -10,8 +10,8 @@ from model.components.main import Main
 from model.components.product import Product
 from model.components.swagger import Swagger
 from model.models import StandConfig
-from model.components.app_keys_page import AppKeysPage
-from model.components.app_certificate_page import AppCertificatePage
+from model.components.app_keys import AppKeysPage
+from model.components.app_certificate import AppCertificatePage
 
 
 class ApplicationManager:
