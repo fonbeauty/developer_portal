@@ -1,4 +1,3 @@
-import time
 
 from selenium.webdriver.chrome.webdriver import WebDriver
 
@@ -9,6 +8,10 @@ from model.models import StandConfig
 
 class ApplicationPage(BaseDriver):
     _page_url = 'base_url/profile/space/app/application_id'
+
+    _CERTIFICATE = 'li:nth-child(3)'
+    _KEYS = '#block-tabs li:nth-child(2) > a'
+
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         """
@@ -21,4 +24,11 @@ class ApplicationPage(BaseDriver):
     def go_to_edit_application(self, app_instance: Application) -> None:
         self.wait_element(f'a[href^="{app_instance.app_href}"]').click()
         pass
+
+    def open_certificate_page(self) -> None:
+        self.wait_element(self._CERTIFICATE).click()
+
+    def open_keys_page(self) -> None:
+        self.wait_element(self._KEYS).click()
+
 

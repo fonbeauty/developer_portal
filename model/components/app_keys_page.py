@@ -1,5 +1,5 @@
 from __future__ import annotations
-import time
+
 from uuid import UUID
 
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -12,13 +12,13 @@ from model.models import StandConfig
 class AppKeysPage(BaseDriver):
     _page_url = 'base_url/profile/space/app/app_id/keys'
 
-    _GET_NEW_CLIENT_SECRET_LINK = '.clientSecretGetNew > div.keys__btn >input'
-    _GET_NEW_CLIENT_SECRET_BTN = 'div.clientSecretGetNewBtn > input.btn'
-    _KEY_SHOW_BTN = 'div.actionBtn.actionBtn-show.clientSecret__key-show-btn'
-    _CLIENT_SECRET = 'div.clientSecretGetNewBtn > div > input.clientSecretGetNew__key'
+    _GET_NEW_CLIENT_SECRET_LINK = '.keys__btn >input'
+    _GET_NEW_CLIENT_SECRET_BTN = 'input.btn'
+    _KEY_SHOW_BTN = '.clientSecret__key-show-btn'
+    _CLIENT_SECRET = '.clientSecretGetNew__key'
+    _ALLERT_INFO = '.alert.info'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
-        self.name = None
         self._page_url = ''
         self.config = config
         super().__init__(driver)
@@ -36,7 +36,7 @@ class AppKeysPage(BaseDriver):
         return self
 
     def client_secret_element(self) -> WebElement:
-        return self.wait_element(self._CLIENT_SECRET)
+        return self.wait_element(self._CLIENT_SECRET, timeout=3)
 
     def client_secret(self) -> str:
         return self.client_secret_element().get_attribute('value')
@@ -50,4 +50,7 @@ class AppKeysPage(BaseDriver):
 
     def client_secret_input_type(self) -> str:
         return self.client_secret_element().get_attribute('type')
+
+    def find_allert_info(self) -> bool:
+        return True if self.wait_element(self._ALLERT_INFO) else False
 

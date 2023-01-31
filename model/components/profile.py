@@ -7,11 +7,11 @@ from model.models import StandConfig
 
 
 class Profile(BaseDriver):
-
     _page_url = 'base_url/profile/space'
 
     _TITLE_TYPE = '.title__type'
     _CREATE_APPLICATION_BTN = '.btn__secondary'
+    _PROFILE_CARD = '.profileCards'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}'
@@ -28,3 +28,6 @@ class Profile(BaseDriver):
 
     def application_card_not_exist(self, app_instance: Application) -> bool:
         return not self.wait_element(f'a[href="{app_instance.app_href}"]')
+
+    def find_create_app(self, app_href) -> bool:
+        return True if self.wait_element(f'a[href="{app_href}"]') else False

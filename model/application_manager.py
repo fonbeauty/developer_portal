@@ -11,7 +11,7 @@ from model.components.product import Product
 from model.components.swagger import Swagger
 from model.models import StandConfig
 from model.components.app_keys_page import AppKeysPage
-from model.components.app_revoke_certificate import AppRevokeCertificate
+from model.components.app_certificate_page import AppCertificatePage
 
 
 class ApplicationManager:
@@ -28,4 +28,4 @@ class ApplicationManager:
         self.application_page = ApplicationPage(driver, config)
         self.edit_application = EditApplication(driver, config)
         self.app_keys_page = AppKeysPage(driver, config)
-        self.app_revoke_certificate = AppRevokeCertificate(driver, config)
+        self.app_certificate_page = AppCertificatePage(driver, config)

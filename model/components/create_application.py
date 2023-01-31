@@ -25,16 +25,13 @@ class CreateApplication(BaseDriver):
     _CLIENT_ID = '#clientId_key'
     _CLIENT_SECRET = '#clientSecretGetNew__key'
     _DOWNLOAD_CERT = '[name=download_cert]'
-    _KEY_SHOW_BTN = 'div.actionBtn.actionBtn-show.clientSecret__key-show-btn'
+    _KEY_SHOW_BTN = '.clientSecret__key-show-btn'
     _PAGE_ALL_APP = '[href="/profile/00000009-0001-0000-9007-000000000002"].sideNav__link'
-    _CERTIFICATE = '#block-tabs > nav > ul > li:nth-child(3)'
-    _NAME_APP = 'div.sidebar__title.application__title > div.titleWrap > div'
-    _KEYS = '#block-tabs > nav > ul > li:nth-child(2) > a'
-    _GET_NEW_CLIENT_SECRET_LINK = '.clientSecretGetNew > div.keys__btn >input'
-    _GET_NEW_CLIENT_SECRET_BTN = 'div.clientSecretGetNewBtn > input.btn'
+    _NAME_APP = '.title__value'
+    _GET_NEW_CLIENT_SECRET_LINK = '.keys__btn >input'
+    _GET_NEW_CLIENT_SECRET_BTN = 'input.btn'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
-        self.name = None
         self._page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}/app/create'
         self.config = config
         super().__init__(driver)
@@ -126,13 +123,6 @@ class CreateApplication(BaseDriver):
 
     def go_to_created_application(self):
         self.wait_element(self._TO_APPLICATION_BTN).click()
-
-    def open_keys_page(self) -> WebElement:
-        self.wait_element(self._KEYS).click()
-        return self
-
-    def open_certificate_page(self) -> None:
-        self.wait_element(self._CERTIFICATE).click()
 
 
 
