@@ -25,10 +25,10 @@ class ApplicationPage(BaseDriver):
         self.wait_element(f'a[href^="{app_instance.app_href}"]').click()
         pass
 
-    def open_certificate_page(self) -> None:
+    def go_to_certificates(self) -> None:
         self.wait_element(self._CERTIFICATE).click()
 
-    def open_keys_page(self) -> None:
+    def go_to_keys(self) -> None:
         self.wait_element(self._KEYS).click()
 
 

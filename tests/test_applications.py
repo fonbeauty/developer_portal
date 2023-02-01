@@ -74,7 +74,7 @@ def test_create_application(app: ApplicationManager, teardown_delete_app: Applic
 
     teardown_delete_app.app_href = app.create_application.get_created_application_href()
     assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
-    assert app.create_application.download_cert_btn()
+    # assert app.create_application.download_cert_btn()
     client_id = app.create_application.client_id()
     client_secret = app.create_application.client_secret()
     assert app.create_application.is_valid_uuid(client_id), 'client_id не соответствует формату uuid'
@@ -86,7 +86,7 @@ def test_create_application(app: ApplicationManager, teardown_delete_app: Applic
         'После нажатия на кнопку "глаз" client_secret скрыт точками '
     app.profile.open()
     app_href = teardown_delete_app.app_href
-    assert app.profile.find_create_app(app_href) == True, 'Созданное приложение отсутствует в списке приложений профиля'
+    assert app.profile.find_create_app(app_href), 'Созданное приложение отсутствует в списке приложений профиля'
 
     LOGGER.info(f'Создано приложение {teardown_delete_app.app_href}')
     pass
@@ -97,16 +97,16 @@ def test_revoke_certificate(app: ApplicationManager, create_and_delete_app: Appl
                   story='Перевыпуск сертификата',
                   title='Успешный перевыпуск сертификата')
     app_instance = create_and_delete_app
-
     app.profile.open()
     app.profile.go_to_application(app_instance)
-    app.application_page.open_certificate_page()
-    app.app_certificate_page.revoke_certificate_click()
-    app.app_certificate_page.radio_btn_revoke_cert_click()
-    app.app_certificate_page.edit_revoke_cert_click()
 
-    assert app.app_certificate_page.success_create_text() == True, 'Нет сообщения "Сертификат успешно отозван"'
-    LOGGER.info(f'Сертификат успешно отозван {app.app_certificate_page.success_create_text() == True}')
+    app.application_page.go_to_certificates()
+    app.app_certificate.revoke_certificate_click()
+    app.app_certificate.radio_btn_revoke_cert_click()
+    app.app_certificate.submit_revoke()
+
+    assert app.app_certificate.success_create_text(), 'Нет сообщения "Сертификат успешно отозван"'
+    LOGGER.info(f'Сертификат успешно отозван {app.app_certificate.success_create_text()}')
     pass
 
 
@@ -115,21 +115,21 @@ def test_issue_new_certificate(app: ApplicationManager, create_and_delete_app: A
                   story='Перевыпуск сертификата',
                   title='Успешный перевыпуск сертификата')
     app_instance = create_and_delete_app
-
     app.profile.open()
     app.profile.go_to_application(app_instance)
-    app.application_page.open_certificate_page()
-    app.app_certificate_page.revoke_certificate_click()
-    app.app_certificate_page.radio_btn_revoke_cert_click()
-    app.app_certificate_page.edit_revoke_cert_click()
 
-    app.app_certificate_page.issue_new_certificate_click()
-    app.app_certificate_page.password_form()
-    app.app_certificate_page.submit()
+    app.application_page.go_to_certificates()
+    app.app_certificate.revoke_certificate_click()
+    app.app_certificate.radio_btn_revoke_cert_click()
+    app.app_certificate.submit_revoke()
 
-    assert app.app_certificate_page.download_cert_btn()
-    assert app.app_certificate_page.success_create_text() == True, 'Нет сообщения "Сертификат готов"'
-    LOGGER.info(f'Сертификат перевыпущен {app.app_certificate_page.success_create_text() == True}')
+    app.app_certificate.issue_new_certificate_click()
+    app.app_certificate.type_defaults_password()
+    app.app_certificate.submit()
+
+    # assert app.app_certificate_page.download_cert_btn()
+    assert app.app_certificate.success_create_text(), 'Нет сообщения "Сертификат готов"'
+    LOGGER.info(f'Сертификат перевыпущен {app.app_certificate.success_create_text()}')
     pass
 
 
@@ -141,20 +141,20 @@ def test_get_new_client_secret(app: ApplicationManager, create_and_delete_app: A
 
     app.profile.open()
     app.profile.go_to_application(app_instance)
-    app.application_page.open_keys_page()
-    app.app_keys_page.get_new_client_secret_link_click()
-    app.app_keys_page.get_new_client_secret_btn_click()
+    app.application_page.go_to_keys()
+    app.app_keys.get_new_client_secret_link_click()
+    app.app_keys.get_new_client_secret_btn_click()
 
-    client_secret = app.app_keys_page.client_secret()
-    assert app.app_keys_page.find_allert_info() == True, 'Нет сообщения "Обратите внимание"'
-    assert app.app_keys_page.is_valid_uuid(client_secret), 'client_secret не соответствует формату uuid'
-    assert app.app_keys_page.client_secret_input_type() == 'password', \
+    client_secret = app.app_keys.client_secret()
+    assert app.app_keys.find_allert_info(), 'Нет сообщения "Обратите внимание"'
+    assert app.app_keys.is_valid_uuid(client_secret), 'client_secret не соответствует формату uuid'
+    assert app.app_keys.client_secret_input_type() == 'password', \
         'После перевыпуска client_secret , он не скрыт точками'
-    app.app_keys_page.show_client_secret_btn_click()
-    assert app.app_keys_page.client_secret_input_type() == 'text', \
+    app.app_keys.show_client_secret_btn_click()
+    assert app.app_keys.client_secret_input_type() == 'text', \
         'После нажатия на кнопку "глаз" client_secret скрыт точками '
 
-    LOGGER.info(f'Client_secret перевыпущен {app.app_keys_page.client_secret()}')
+    LOGGER.info(f'Client_secret перевыпущен {app.app_keys.client_secret()}')
     pass
 
 

@@ -5,14 +5,14 @@ from model.components.base_driver import BaseDriver
 from model.models import StandConfig
 
 
-class AppCertificatePage(BaseDriver):
+class AppCertificate(BaseDriver):
     _page_url = 'base_url/profile/space/app/app_id/certs'
 
     _REVOKE_CERT = '.cert__action.action__revoke'
     _RADIO_BTN_REVOKE_CERT = 'div:nth-child(3) > label.radioBtn-checkmark'
     _PASSWORD = '#profile-settings-curr-pass'
     _PASSWORD_CONFIRMATION = '#profile-settings-new-pass-conf'
-    _EDIT_REVOKE_CERT = 'input.btn'
+    _SUBMIT_REVOKE = 'input.btn'
     _NEW_CERT_BTN = '.btn__secondary-sm'
     _DOWNLOAD_CERT = '[name=download_cert]'
     _SUBMIT_BTN = '#edit-save'
@@ -30,8 +30,8 @@ class AppCertificatePage(BaseDriver):
         self.wait_element(self._RADIO_BTN_REVOKE_CERT).click()
         return self
 
-    def edit_revoke_cert_click(self) -> None:
-        self.wait_element(self._EDIT_REVOKE_CERT).click()
+    def submit_revoke(self) -> None:
+        self.wait_element(self._SUBMIT_REVOKE).click()
 
     def issue_new_certificate_click(self) -> None:
         self.wait_element(self._NEW_CERT_BTN).click()
@@ -44,10 +44,10 @@ class AppCertificatePage(BaseDriver):
         self.wait_element(self._PASSWORD_CONFIRMATION).send_keys(password)
         return self
 
-    def password_form(self, password: str = None):
+    def type_defaults_password(self):
         (
-            self.type_password(password or self.config.defaults.password)
-                .type_password_confirmation(password or self.config.defaults.password)
+            self.type_password(self.config.defaults.password)
+                .type_password_confirmation(self.config.defaults.password)
         )
         return self
 
@@ -57,5 +57,5 @@ class AppCertificatePage(BaseDriver):
     def submit(self) -> None:
         self.wait_element(self._SUBMIT_BTN).click()
 
-    def success_create_text(self) -> bool:
-        return True if self.wait_element(self._SUCCESS_CREATE_TEXT) else False
+    def success_create_text(self) -> WebElement:
+        return self.wait_element(self._SUCCESS_CREATE_TEXT)

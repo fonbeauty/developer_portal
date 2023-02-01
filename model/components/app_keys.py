@@ -9,29 +9,29 @@ from model.components.base_driver import BaseDriver
 from model.models import StandConfig
 
 
-class AppKeysPage(BaseDriver):
+class AppKeys(BaseDriver):
     _page_url = 'base_url/profile/space/app/app_id/keys'
 
-    _GET_NEW_CLIENT_SECRET_LINK = '.keys__btn >input'
-    _GET_NEW_CLIENT_SECRET_BTN = 'input.btn'
+    _GET_NEW_CLIENT_SECRET_LINK = '#clientSecretGetNew__btn'
+    _GET_NEW_CLIENT_SECRET_BTN = '.btn-colored'
     _KEY_SHOW_BTN = '.clientSecret__key-show-btn'
     _CLIENT_SECRET = '.clientSecretGetNew__key'
-    _ALLERT_INFO = '.alert.info'
+    _ALLERT_INFO = '.clientSecret__info'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = ''
         self.config = config
         super().__init__(driver)
 
-    def get_new_client_secret_link_click(self) -> AppKeysPage:
+    def get_new_client_secret_link_click(self) -> AppKeys:
         self.wait_element(self._GET_NEW_CLIENT_SECRET_LINK).click()
         return self
 
-    def get_new_client_secret_btn_click(self) -> AppKeysPage:
+    def get_new_client_secret_btn_click(self) -> AppKeys:
         self.wait_element(self._GET_NEW_CLIENT_SECRET_BTN).click()
         return self
 
-    def show_client_secret_btn_click(self) -> AppKeysPage:
+    def show_client_secret_btn_click(self) -> AppKeys:
         self.wait_element(self._KEY_SHOW_BTN).click()
         return self
 
@@ -51,6 +51,6 @@ class AppKeysPage(BaseDriver):
     def client_secret_input_type(self) -> str:
         return self.client_secret_element().get_attribute('type')
 
-    def find_allert_info(self) -> bool:
-        return True if self.wait_element(self._ALLERT_INFO) else False
+    def find_allert_info(self) -> WebElement:
+        return self.wait_element(self._ALLERT_INFO)
 

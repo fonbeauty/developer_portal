@@ -29,5 +29,5 @@ class Profile(BaseDriver):
     def application_card_not_exist(self, app_instance: Application) -> bool:
         return not self.wait_element(f'a[href="{app_instance.app_href}"]')
 
-    def find_create_app(self, app_href) -> bool:
-        return True if self.wait_element(f'a[href="{app_href}"]') else False
+    def find_create_app(self, app_href) -> WebElement:
+        return self.wait_element(f'a[href="{app_href}"]')
