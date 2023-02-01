@@ -94,25 +94,28 @@ def test_create_application(app: ApplicationManager, teardown_delete_app: Applic
 
 def test_revoke_certificate(app: ApplicationManager, create_and_delete_app: Application):
     allure_labels(feature='Работа с приложениями',
-                  story='Перевыпуск сертификата',
-                  title='Успешный перевыпуск сертификата')
+                  story='Работа с сертификатом',
+                  title='Успешный отзыв сертификата')
     app_instance = create_and_delete_app
     app.profile.open()
     app.profile.go_to_application(app_instance)
 
     app.application_page.go_to_certificates()
+    cert_id = app.app_certificate.get_cert_id()
     app.app_certificate.revoke_certificate_click()
-    app.app_certificate.radio_btn_revoke_cert_click()
+    app.app_certificate.select_another_reason_revoke_sert()
     app.app_certificate.submit_revoke()
 
-    assert app.app_certificate.success_create_text(), 'Нет сообщения "Сертификат успешно отозван"'
-    LOGGER.info(f'Сертификат успешно отозван {app.app_certificate.success_create_text()}')
+    assert app.app_certificate.success_text_panel(), 'Нет сообщения "Сертификат успешно отозван"'
+    assert app.app_certificate.is_status_cert_revoked(cert_id),\
+        f'У сертификата "{cert_id}" не отображен статус "отозван"'
+    LOGGER.info(f'Сертификат {cert_id} успешно отозван')
     pass
 
 
 def test_issue_new_certificate(app: ApplicationManager, create_and_delete_app: Application):
     allure_labels(feature='Работа с приложениями',
-                  story='Перевыпуск сертификата',
+                  story='Работа с сертификатом',
                   title='Успешный перевыпуск сертификата')
     app_instance = create_and_delete_app
     app.profile.open()
