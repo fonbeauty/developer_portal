@@ -57,5 +57,3 @@ class AppKeys(BaseDriver):
 
     def notice(self) -> WebElement:
         return self.wait_element(self._NOTICE)
-
-

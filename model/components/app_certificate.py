@@ -78,4 +78,3 @@ class AppCertificate(BaseDriver):
                 if cert_id == item_title and item_status == 'отозван':
                     return True
         return False
-
