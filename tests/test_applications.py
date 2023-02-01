@@ -117,10 +117,12 @@ def test_issue_new_certificate(app: ApplicationManager, create_and_delete_app: A
     allure_labels(feature='Работа с приложениями',
                   story='Работа с сертификатом',
                   title='Успешный перевыпуск сертификата')
+    """
+    Todo вынести отзыв сертификата в работу через АПИ
+    """
     app_instance = create_and_delete_app
     app.profile.open()
     app.profile.go_to_application(app_instance)
-
     app.application_page.go_to_certificates()
     app.app_certificate.revoke_certificate_click()
     app.app_certificate.select_another_reason_revoke_sert()
