@@ -123,7 +123,7 @@ def test_issue_new_certificate(app: ApplicationManager, create_and_delete_app: A
 
     app.application_page.go_to_certificates()
     app.app_certificate.revoke_certificate_click()
-    app.app_certificate.radio_btn_revoke_cert_click()
+    app.app_certificate.select_another_reason_revoke_sert()
     app.app_certificate.submit_revoke()
 
     app.app_certificate.issue_new_certificate_click()
@@ -131,8 +131,8 @@ def test_issue_new_certificate(app: ApplicationManager, create_and_delete_app: A
     app.app_certificate.submit()
 
     # assert app.app_certificate_page.download_cert_btn()
-    assert app.app_certificate.success_create_text(), 'Нет сообщения "Сертификат готов"'
-    LOGGER.info(f'Сертификат перевыпущен {app.app_certificate.success_create_text()}')
+    assert app.app_certificate.success_text_panel(), 'Нет сообщения "Сертификат готов"'
+    LOGGER.info('Сертификат успешно выпущен')
     pass
 
 
