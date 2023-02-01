@@ -140,10 +140,9 @@ def test_issue_new_certificate(app: ApplicationManager, create_and_delete_app: A
 
 def test_get_new_client_secret(app: ApplicationManager, create_and_delete_app: Application):
     allure_labels(feature='Работа с приложениями',
-                  story='Перевыпуск сертификата',
-                  title='Успешный перевыпуск сертификата')
+                  story='Работа с ключами',
+                  title='Успешный сброс client_secret')
     app_instance = create_and_delete_app
-
     app.profile.open()
     app.profile.go_to_application(app_instance)
     app.application_page.go_to_keys()
@@ -151,15 +150,16 @@ def test_get_new_client_secret(app: ApplicationManager, create_and_delete_app: A
     app.app_keys.get_new_client_secret_btn_click()
 
     client_secret = app.app_keys.client_secret()
-    assert app.app_keys.find_allert_info(), 'Нет сообщения "Обратите внимание"'
+    assert app.app_keys.allert_info(), 'Нет сообщения "Обратите внимание ..."'
+    assert app.app_keys.notice(), 'Нет предупреждения "Обязательно сохраните куда-нибудь clientSecret ..."'
     assert app.app_keys.is_valid_uuid(client_secret), 'client_secret не соответствует формату uuid'
     assert app.app_keys.client_secret_input_type() == 'password', \
-        'После перевыпуска client_secret , он не скрыт точками'
+        'После перевыпуска client_secret, он не скрыт точками'
     app.app_keys.show_client_secret_btn_click()
     assert app.app_keys.client_secret_input_type() == 'text', \
         'После нажатия на кнопку "глаз" client_secret скрыт точками '
 
-    LOGGER.info(f'Client_secret перевыпущен {app.app_keys.client_secret()}')
+    LOGGER.info(f'Client_secret успешно получен {client_secret}')
     pass
 
 
