@@ -12,7 +12,6 @@ class ApplicationPage(BaseDriver):
     _CERTIFICATE = 'li:nth-child(3)'
     _KEYS = '#block-tabs li:nth-child(2) > a'
 
-
     def __init__(self, driver: WebDriver, config: StandConfig):
         """
         пока не понятно, как реализовать урл этой страницы
@@ -30,5 +29,3 @@ class ApplicationPage(BaseDriver):
 
     def go_to_keys(self) -> None:
         self.wait_element(self._KEYS).click()
-
-

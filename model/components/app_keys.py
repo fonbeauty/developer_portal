@@ -17,6 +17,7 @@ class AppKeys(BaseDriver):
     _KEY_SHOW_BTN = '.clientSecret__key-show-btn'
     _CLIENT_SECRET = '.clientSecretGetNew__key'
     _ALLERT_INFO = '.clientSecret__info'
+    _NOTICE = '.notice'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = ''
@@ -51,6 +52,8 @@ class AppKeys(BaseDriver):
     def client_secret_input_type(self) -> str:
         return self.client_secret_element().get_attribute('type')
 
-    def find_allert_info(self) -> WebElement:
+    def allert_info(self) -> WebElement:
         return self.wait_element(self._ALLERT_INFO)
 
+    def notice(self) -> WebElement:
+        return self.wait_element(self._NOTICE)

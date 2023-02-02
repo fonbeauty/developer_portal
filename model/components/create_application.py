@@ -114,13 +114,3 @@ class CreateApplication(BaseDriver):
 
     def name_app(self) -> str:
         return self.wait_element(self._NAME_APP).text
-
-
-
-
-
-
-
-
-
-
