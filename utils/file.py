@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from model.models import User
+from model.data_model.config import User
 
 
 def path_for_resources(file_name='') -> str:

@@ -133,3 +133,5 @@ chromedriver
 tests/cookie.txt
 /configs/*config.yml
 !/configs/example_config.yml
+/configs/*test_data.yml
+!/configs/example_test_data.yml

@@ -3,7 +3,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 
 from common.application import Application
 from model.components.base_driver import BaseDriver
-from model.models import StandConfig
+from model.data_model.config import StandConfig
 
 
 class ApplicationPage(BaseDriver):
