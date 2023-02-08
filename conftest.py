@@ -53,26 +53,27 @@ def pytest_addoption(parser):
 
 
 def pytest_sessionstart(session: pytest.Session):
-    global CONFIG
-    global TEST_DATA
+    global CONFIG, TEST_DATA
     stand = session.config.getoption('--stand')
+    LOGGER.info(f'Начало загрузки конфигурации стенда {stand} и тестовых данных')
     try:
-        CONFIG = load_data.get_config(stand)
+        # CONFIG = load_data.get_config(stand)
+        CONFIG, TEST_DATA = load_data.get_config_and_data(stand)
     except ValidationError:
-        msg = 'Не удалось загрузить конфиг, выполнение тестов прервано'
+        msg = 'Не удалось загрузить конфиг или тестовые данные, выполнение тестов прервано'
         LOGGER.exception(msg)
         pytest.exit(msg=msg, returncode=7)
     else:
-        LOGGER.info(f'Конфигурация стенда {stand} успешно загружена')
-
-    try:
-        TEST_DATA = load_data.get_test_data(stand)
-    except ValidationError:
-        msg = 'Не удалось загрузить тестовые данные, выполнение тестов прервано'
-        LOGGER.exception(msg)
-        pytest.exit(msg=msg, returncode=7)
-    else:
-        LOGGER.info(f'Тестовые данные для стенда {stand} успешно загружена')
+        LOGGER.info(f'Конфигурация стенда {stand} и тестовые данные успешно загружены')
+    pass
+    # try:
+    #     TEST_DATA = load_data.get_test_data(stand)
+    # except ValidationError:
+    #     msg = 'Не удалось загрузить тестовые данные, выполнение тестов прервано'
+    #     LOGGER.exception(msg)
+    #     pytest.exit(msg=msg, returncode=7)
+    # else:
+    #     LOGGER.info(f'Тестовые данные для стенда {stand} успешно загружена')
     pass
 
 

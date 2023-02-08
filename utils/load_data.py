@@ -11,12 +11,15 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _load_yml_data(path: str) -> dict:
-    with open(path, 'r', encoding='utf8') as stream:
-        try:
+    try:
+        with open(path, 'r', encoding='utf8') as stream:
             return yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(f'ERROR {exc}')
-            raise exc
+    except FileNotFoundError as e:
+        LOGGER.exception(f'Файл не найден')
+        raise
+    except yaml.YAMLError as exc:
+        LOGGER.exception(f'Ошибка парсинга YML файла')
+        raise
 
 
 def get_config(stand: str) -> StandConfig:
@@ -40,3 +43,7 @@ def get_test_data(stand: str) -> TestData:
         LOGGER.exception('Ошибка загрузки тестовых данных')
         raise e
     return test_data
+
+
+def get_config_and_data(stand: str) -> [StandConfig, TestData]:
+    return get_config(stand), get_test_data(stand)
