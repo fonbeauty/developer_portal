@@ -11,7 +11,7 @@ class Main(BaseDriver):
 
     _LOGIN_LINK = '#edit-openid-connect-client-keycloak-login'
     _PROFILE_LINK = '.profile__link'
-    _CATALOG_LINK = 'a[href="/catalog"].text-link'
+    _CATALOG_LINK = 'a[href="/catalog"]'
     _SPACE_LINK_ORG = '.currentOrg__name a'
     _USER_MENU_BLOCK = '#user_menu_block .dropdown__orgMenu.orgMenu'
     _HELP_HEADER_LINK = '.header__dropdown--element.text-link'

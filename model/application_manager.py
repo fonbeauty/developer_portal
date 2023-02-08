@@ -8,6 +8,7 @@ from model.components.catalog import Catalog
 from model.components.how_to_use import HowToUse
 from model.components.main import Main
 from model.components.product import Product
+from model.components.subscription import Subscription
 from model.components.swagger import Swagger
 from model.models import StandConfig
 from model.components.app_keys import AppKeys
@@ -29,3 +30,4 @@ class ApplicationManager:
         self.edit_application = EditApplication(driver, config)
         self.app_keys = AppKeys(driver, config)
         self.app_certificate = AppCertificate(driver, config)
+        self.subscription = Subscription(driver, config)
