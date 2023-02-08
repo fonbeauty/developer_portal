@@ -14,34 +14,28 @@ def _load_yml_data(path: str) -> dict:
     try:
         with open(path, 'r', encoding='utf8') as stream:
             return yaml.safe_load(stream)
-    except FileNotFoundError as e:
-        LOGGER.exception(f'Файл не найден')
-        raise
-    except yaml.YAMLError as exc:
-        LOGGER.exception(f'Ошибка парсинга YML файла')
+    except Exception:
         raise
 
 
 def get_config(stand: str) -> StandConfig:
-    ymlconfig = _load_yml_data(f'{str(Path(__file__).parent.parent)}/configs/{stand}_config.yml')
-    ymlconfig['stand'] = stand
-    stand_config = ''
     try:
+        ymlconfig = _load_yml_data(f'{str(Path(__file__).parent.parent)}/configs/{stand}_config.yml')
+        ymlconfig['stand'] = stand
         stand_config = StandConfig.parse_obj(ymlconfig)
-    except ValidationError as e:
-        LOGGER.exception('Ошибка загрузки конфига')
-        raise e
+    except Exception as e:
+        LOGGER.exception(f'Ошибка при загрузке конфигурации {stand} стенда')
+        raise
     return stand_config
 
 
 def get_test_data(stand: str) -> TestData:
-    ymlconfig = _load_yml_data(f'{str(Path(__file__).parent.parent)}/configs/{stand}_test_data.yml')
-    test_data = ''
     try:
+        ymlconfig = _load_yml_data(f'{str(Path(__file__).parent.parent)}/configs/{stand}_test_data.yml')
         test_data = TestData.parse_obj(ymlconfig)
-    except ValidationError as e:
-        LOGGER.exception('Ошибка загрузки тестовых данных')
-        raise e
+    except Exception as e:
+        LOGGER.exception(f'Ошибка при загрузке тестовых данных для {stand} стенда')
+        raise
     return test_data
 
 

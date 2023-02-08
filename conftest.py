@@ -57,23 +57,13 @@ def pytest_sessionstart(session: pytest.Session):
     stand = session.config.getoption('--stand')
     LOGGER.info(f'Начало загрузки конфигурации стенда {stand} и тестовых данных')
     try:
-        # CONFIG = load_data.get_config(stand)
         CONFIG, TEST_DATA = load_data.get_config_and_data(stand)
-    except ValidationError:
+    except Exception:
         msg = 'Не удалось загрузить конфиг или тестовые данные, выполнение тестов прервано'
-        LOGGER.exception(msg)
+        LOGGER.error(msg)
         pytest.exit(msg=msg, returncode=7)
     else:
         LOGGER.info(f'Конфигурация стенда {stand} и тестовые данные успешно загружены')
-    pass
-    # try:
-    #     TEST_DATA = load_data.get_test_data(stand)
-    # except ValidationError:
-    #     msg = 'Не удалось загрузить тестовые данные, выполнение тестов прервано'
-    #     LOGGER.exception(msg)
-    #     pytest.exit(msg=msg, returncode=7)
-    # else:
-    #     LOGGER.info(f'Тестовые данные для стенда {stand} успешно загружена')
     pass
 
 
@@ -135,7 +125,7 @@ def admin_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
     admin = CONFIG.users.admin
     if len(admin.cookie) == 0 or file.is_cookie_expired(stand, admin, CONFIG.timeouts.cookie_expire):
-        LOGGER.info('Срок действия cookie админа истек или отсутствует файл с cookie')
+        LOGGER.info('Срок действия cookie админа истек или cookie отсутствует')
         try:
             admin.cookie = admin_api.get_admin_cookie(CONFIG)
         except (HTTPError, AssertionError):
@@ -151,7 +141,7 @@ def driver_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
     developer = CONFIG.users.developer
     if len(developer.cookie) == 0 or file.is_cookie_expired(stand, developer, CONFIG.timeouts.cookie_expire):
-        LOGGER.info('Срок действия cookie пользователя истек или отсутствует файл cookie')
+        LOGGER.info('Срок действия cookie пользователя истек или cookie отсутствует')
         try:
             Main(driver, CONFIG).open().login_link_click()
             if stand == 'dev':
