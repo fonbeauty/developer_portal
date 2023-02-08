@@ -1,0 +1,19 @@
+users:
+  developer:
+    role: role
+    login: login
+    password: password
+    description: description
+    space: space
+    id: 201
+  admin:
+    role: role
+    login: login
+    password: password
+    description: description
+    space: None
+    id: 135
+
+defaults:
+  password: password
+  session: session
