@@ -10,7 +10,7 @@ from model.components.main import Main
 from model.components.product import Product
 from model.components.subscription import Subscription
 from model.components.swagger import Swagger
-from model.models import StandConfig
+from model.data_model.config import StandConfig
 from model.components.app_keys import AppKeys
 from model.components.app_certificate import AppCertificate
 
