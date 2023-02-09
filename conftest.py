@@ -11,13 +11,15 @@ from datetime import datetime
 from common import admin_api
 from model.components.login import Login
 from model.components.main import Main
-from utils.load_config_data import get_config
+from utils import load_data
 from model.application_manager import ApplicationManager
-from model.models import StandConfig
+from model.data_model.config import StandConfig
+from model.data_model.test_data import TestData
 from utils import file
 from utils.file import path_for_resources
 
 CONFIG: StandConfig
+TEST_DATA: TestData
 LOGGER = logging.getLogger(__name__)
 
 
@@ -51,16 +53,17 @@ def pytest_addoption(parser):
 
 
 def pytest_sessionstart(session: pytest.Session):
-    global CONFIG
+    global CONFIG, TEST_DATA
     stand = session.config.getoption('--stand')
+    LOGGER.info(f'Начало загрузки конфигурации стенда {stand} и тестовых данных')
     try:
-        CONFIG = get_config(stand)
-    except ValidationError:
-        msg = 'Не удалось загрузить конфиг, выполнение тестов прервано'
-        LOGGER.exception(msg)
+        CONFIG, TEST_DATA = load_data.get_config_and_data(stand)
+    except Exception:
+        msg = 'Не удалось загрузить конфиг или тестовые данные, выполнение тестов прервано'
+        LOGGER.error(msg)
         pytest.exit(msg=msg, returncode=7)
     else:
-        LOGGER.info(f'Конфигурация стенда {stand} успешно загружена')
+        LOGGER.info(f'Конфигурация стенда {stand} и тестовые данные успешно загружены')
     pass
 
 
@@ -122,7 +125,7 @@ def admin_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
     admin = CONFIG.users.admin
     if len(admin.cookie) == 0 or file.is_cookie_expired(stand, admin, CONFIG.timeouts.cookie_expire):
-        LOGGER.info('Срок действия cookie админа истек или отсутствует файл с cookie')
+        LOGGER.info('Срок действия cookie админа истек или cookie отсутствует')
         try:
             admin.cookie = admin_api.get_admin_cookie(CONFIG)
         except (HTTPError, AssertionError):
@@ -138,7 +141,7 @@ def driver_cookie(driver: WebDriver) -> dict:
     stand = CONFIG.stand
     developer = CONFIG.users.developer
     if len(developer.cookie) == 0 or file.is_cookie_expired(stand, developer, CONFIG.timeouts.cookie_expire):
-        LOGGER.info('Срок действия cookie пользователя истек или отсутствует файл cookie')
+        LOGGER.info('Срок действия cookie пользователя истек или cookie отсутствует')
         try:
             Main(driver, CONFIG).open().login_link_click()
             if stand == 'dev':

@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 from model.components.base_driver import BaseDriver
-from model.models import StandConfig
+from model.data_model.config import StandConfig
 
 
 class AppKeys(BaseDriver):

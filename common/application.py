@@ -4,7 +4,7 @@ import uuid
 from bs4 import BeautifulSoup
 
 from common.sessions import BaseSession
-from model.models import StandConfig
+from model.data_model.config import StandConfig
 
 LOGGER = logging.getLogger(__name__)
 
