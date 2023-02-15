@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import Select
 
 from common.application import Application
 from model.components.base_driver import BaseDriver
-from model.models import StandConfig
+from model.data_model.config import StandConfig
 
 
 class Subscription(BaseDriver):
@@ -26,40 +28,44 @@ class Subscription(BaseDriver):
         self.config = config
         super().__init__(driver)
 
-    def connect_click(self) -> None:
+    def connect_click(self):
         self.wait_element(self._CONNECT_BTN).click()
         return self
 
-    def select_tariff(self) -> None:
+    def select_tariff(self):
         self.wait_element(self._RADIO_BTN).click()
         return self
 
-    def subs_btn_next(self) -> None:
+    def subs_btn_next(self):
         self.wait_element(self._SUBS_BTN_NEXT).click()
-        pass
+        return self
 
-    def create_new_app(self) -> None:
+    def create_new_app(self):
         self.wait_element(self._CREATE_NEW_APP).click()
-        pass
+        return self
 
     def title_alert(self) -> WebElement:
         return self.wait_element(self._TITLE_ALERT)
 
-    def cancel(self) -> None:
+    def cancel(self):
         self.wait_element(self._CANCEL_BTN).click()
+        return self
 
-    def back(self) -> None:
+    def back(self):
         self.wait_element(self._BACK_BTN).click()
+        return self
 
     def drop_down_list(self) -> WebElement:
         return self.wait_element(self._APP_LIST)
 
-    def select_app(self, app_name) -> str:
+    def select_app(self, app_name: str) -> Subscription:
         drop = Select(self.drop_down_list())
         drop.select_by_visible_text(app_name)
+        return self
 
     def type_name_app(self) -> str:
         return self.wait_element(self._NAME_APP).text
+
 
 
 

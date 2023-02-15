@@ -35,3 +35,9 @@ class BaseDriver:
 
     def current_url(self) -> str:
         return self.driver.current_url
+
+    def waite_xpath_elements(self, selector, timeout=1, by=By.XPATH) -> WebElement:
+        try:
+            return WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((by,selector)))
+        except TimeoutException:
+            pass

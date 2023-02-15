@@ -32,6 +32,5 @@ class Profile(BaseDriver):
     def find_create_app(self, app_href) -> WebElement:
         return self.wait_element(f'a[href="{app_href}"]')
 
-    def open_app_after_subscribing(self, app_name) -> None:
-        self.wait_element(app_name).click()
-        return self
+    def get_app_href(self, app_name) -> str:
+        return self.waite_xpath_elements(f'//div[contains(text(),"{app_name}")]/parent::a').get_attribute('href')
