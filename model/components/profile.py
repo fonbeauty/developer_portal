@@ -1,4 +1,5 @@
 from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 from common.application import Application
@@ -33,4 +34,4 @@ class Profile(BaseDriver):
         return self.wait_element(f'a[href="{app_href}"]')
 
     def get_app_href_by_name(self, app_name) -> str:
-        return self.waite_elements_by_xpath(f'//div[contains(text(),"{app_name}")]/parent::a').get_attribute('href')
+        return self.wait_element(f'//div[contains(text(),"{app_name}")]/parent::a', by=By.XPATH).get_attribute('href')

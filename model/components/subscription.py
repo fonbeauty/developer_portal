@@ -32,26 +32,26 @@ class Subscription(BaseDriver):
         self.wait_element(self._CONNECT_BTN).click()
         return self
 
-    def select_tariff(self):
+    def select_tariff_click(self):
         self.wait_element(self._RADIO_BTN).click()
         return self
 
-    def subs_btn_next(self):
+    def subs_btn_next_click(self):
         self.wait_element(self._SUBS_BTN_NEXT).click()
         return self
 
-    def create_new_app(self):
+    def create_new_app_click(self):
         self.wait_element(self._CREATE_NEW_APP).click()
         return self
 
     def title_alert(self) -> WebElement:
         return self.wait_element(self._TITLE_ALERT)
 
-    def cancel(self):
+    def cancel_click(self):
         self.wait_element(self._CANCEL_BTN).click()
         return self
 
-    def back(self):
+    def back_click(self):
         self.wait_element(self._BACK_BTN).click()
         return self
 
@@ -63,7 +63,7 @@ class Subscription(BaseDriver):
         drop.select_by_visible_text(app_name)
         return self
 
-    def type_name_app(self) -> str:
+    def get_name_app(self) -> str:
         return self.wait_element(self._NAME_APP).text
 
 
