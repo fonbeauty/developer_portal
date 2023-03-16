@@ -37,7 +37,7 @@ class AppKeys(BaseDriver):
         return self
 
     def client_secret_element(self) -> WebElement:
-        return self.wait_element(self._CLIENT_SECRET, timeout=3)
+        return self.wait_element(self._CLIENT_SECRET, timeout=5)
 
     def client_secret(self) -> str:
         return self.client_secret_element().get_attribute('value')

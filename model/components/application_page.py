@@ -11,6 +11,9 @@ class ApplicationPage(BaseDriver):
 
     _CERTIFICATE = 'li:nth-child(3)'
     _KEYS = '#block-tabs li:nth-child(2) > a'
+    _NAME_APP = '.title__value'
+    _CATALOG = 'a[href="/catalog"]'
+
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         """
@@ -29,3 +32,9 @@ class ApplicationPage(BaseDriver):
 
     def go_to_keys(self) -> None:
         self.wait_element(self._KEYS).click()
+
+    def get_name_app(self) -> str:
+        return self.wait_element(self._NAME_APP).text
+
+    def go_to_catalog(self) -> None:
+        self.wait_element(self._CATALOG).click()

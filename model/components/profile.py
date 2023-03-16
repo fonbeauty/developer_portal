@@ -1,4 +1,5 @@
 from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 from common.application import Application
@@ -31,3 +32,6 @@ class Profile(BaseDriver):
 
     def find_create_app(self, app_href) -> WebElement:
         return self.wait_element(f'a[href="{app_href}"]')
+
+    def get_app_href_by_name(self, app_name) -> str:
+        return self.wait_element(f'//div[contains(text(),"{app_name}")]/parent::a', by=By.XPATH).get_attribute('href')
