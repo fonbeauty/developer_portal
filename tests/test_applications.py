@@ -212,7 +212,7 @@ def test_subscription(app: ApplicationManager, create_and_delete_app: Applicatio
 
 def test_subscribing_and_creating_an_app(app: ApplicationManager, teardown_delete_app: Application):
     allure_labels(feature='Работа с приложениями',
-                  story='Оформление подписки и создание приложения',
+                  story='Оформление подписки и создание приложения во время оформления подписки',
                   title='Успешное оформление подписки и создание приложения')
 
     app.main_page.open_catalog()
