@@ -13,6 +13,8 @@ class Profile(BaseDriver):
     _TITLE_TYPE = '.title__type'
     _CREATE_APPLICATION_BTN = '.btn__secondary'
     _PROFILE_CARD = '.profileCards'
+    # _PRODUCTS_PAGE = 'a[href="/profile/00000009-0001-0000-9007-000000000002/products"]'
+    # _SUBSCRIPTION_PAGE = 'a[href="/profile/00000009-0001-0000-9007-000000000002/subscriptions"]'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}'
@@ -35,3 +37,13 @@ class Profile(BaseDriver):
 
     def get_app_href_by_name(self, app_name) -> str:
         return self.wait_element(f'//div[contains(text(),"{app_name}")]/parent::a', by=By.XPATH).get_attribute('href')
+
+    def open_create_subs_application(self, app_href) -> None:
+        self.wait_element(f'a[href="{app_href}"]').click()
+
+    # def go_to_product_page(self) -> None:
+    #     self.wait_element(self._PRODUCTS_PAGE).click()
+
+    # def go_to_subscriptions_page(self) -> None:
+    #     self.wait_element(self._SUBSCRIPTION_PAGE).click()
+

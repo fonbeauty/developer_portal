@@ -1,4 +1,5 @@
 import logging
+import time
 
 import pytest
 
@@ -244,8 +245,31 @@ def test_subscribing_and_creating_an_app(app: ApplicationManager, teardown_delet
     teardown_delete_app.app_href = app.profile.get_app_href_by_name(app_name)
 
 
+def test_unsubscribe(app: ApplicationManager, teardown_delete_app: Application):
+    allure_labels(feature='Работа с приложениями',
+                  story='Остановить подписку у созданного приложения во время оформления подписки',
+                  title='Успешное остановление подписки')
 
+    app.main_page.open_catalog()
+    app.catalog.go_to_product()
+    (
+        app.subscription.connect_click()
+        .select_tariff_click()
+        .subs_btn_next_click()
+        .create_new_app_click()
+    )
+    app.create_application.fill_form()
+    app.subscription.subs_btn_next_click()
+    app_name = app.subscription.get_name_app()
+    assert app.subscription.title_alert(), 'Нет сообщений "Приложение создано" "Сертификат выпущен"'
+    app.subscription.subs_btn_next_click()
+    app.profile.open()
+    app_href = app.profile.get_app_href_by_name(app_name)
+    app.profile.open_create_subs_application(app_href)
+    app.create_application.product_card_click()
+    app.product.stop_subs_click()
+    app.subscription.submit_click()
+    assert app.subscription.title_alert(), 'Нет сообщения "Подписка удалена успешно"'
 
-
-
+    teardown_delete_app.app_href = app_href
 

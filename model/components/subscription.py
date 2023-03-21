@@ -22,6 +22,8 @@ class Subscription(BaseDriver):
     _BACK_BTN = '.subsBtn-prev'
     _APP_LIST = '.has-value'
     _NAME_APP = ':nth-child(3) > .fieldGroup__text'
+    _SUBMIT = '.form-submit'
+    # _NEXT_PAGE = '.pager__item--next'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = ''
@@ -65,6 +67,14 @@ class Subscription(BaseDriver):
 
     def get_name_app(self) -> str:
         return self.wait_element(self._NAME_APP).text
+
+    def submit_click(self) -> None:
+        self.wait_element(self._SUBMIT).click()
+
+    # def next_page_click(self):
+    #     self.wait_element(self._NEXT_PAGE).click()
+    #     return self
+
 
 
 
