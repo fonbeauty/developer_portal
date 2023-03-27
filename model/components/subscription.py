@@ -10,7 +10,6 @@ from model.data_model.config import StandConfig
 
 
 class Subscription(BaseDriver):
-
     _page_url = 'base_url/product/prodCode/subscribe'
 
     _CONNECT_BTN = '.btn-blue'
@@ -23,7 +22,6 @@ class Subscription(BaseDriver):
     _APP_LIST = '.has-value'
     _NAME_APP = ':nth-child(3) > .fieldGroup__text'
     _SUBMIT = '.form-submit'
-    # _NEXT_PAGE = '.pager__item--next'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = ''
@@ -71,11 +69,16 @@ class Subscription(BaseDriver):
     def submit_click(self) -> None:
         self.wait_element(self._SUBMIT).click()
 
-    # def next_page_click(self):
-    #     self.wait_element(self._NEXT_PAGE).click()
-    #     return self
+    def select_tariff(self) -> None:
+        self.connect_click() \
+            .select_tariff_click() \
+            .subs_btn_next_click()
+        return self
 
-
-
-
-
+    def select_app_from_list(self, app_name=None) -> None:
+        if app_name is None:
+            self.create_new_app_click()
+        else:
+            self.select_app(app_name) \
+                .subs_btn_next_click() \
+                .subs_btn_next_click()

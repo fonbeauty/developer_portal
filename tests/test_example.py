@@ -77,7 +77,7 @@ def test_open_product(open_main_page: ApplicationManager):
     open_main_page.main_page.open_catalog()
     product = open_main_page.catalog.random_product_card()
     product_title = open_main_page.catalog.product_title(product)
-    open_main_page.catalog.go_to_product(product)
+    open_main_page.catalog.select_product(product)
 
     pass
 
@@ -92,7 +92,7 @@ def test_open_swagger(open_main_page: ApplicationManager):
 
     open_main_page.main_page.open_catalog()
     product = open_main_page.catalog.random_product_card()
-    open_main_page.catalog.go_to_product(product)
+    open_main_page.catalog.select_product(product)
     open_main_page.product.go_to_token_swagger()
 
     pass
@@ -110,7 +110,7 @@ def test_download_swagger(open_main_page: ApplicationManager):
 
     open_main_page.main_page.open_catalog()
     product = open_main_page.catalog.random_product_card()
-    open_main_page.catalog.go_to_product(product)
+    open_main_page.catalog.select_product(product)
     open_main_page.product.go_to_token_swagger()
     open_main_page.swagger.download_swagger()
 
