@@ -64,7 +64,7 @@ def create_and_delete_app(user_session: BaseSession, admin_session: BaseSession)
 
 
 @pytest.fixture(scope='function')
-def subs_and_select_app(app: ApplicationManager) -> str:
+def subscription_and_select_app(app: ApplicationManager) -> str:
     app.main_page.open_catalog()
     app.catalog.select_product()
     app.subscription.select_tariff()
@@ -92,6 +92,7 @@ def test_create_application(app: ApplicationManager, teardown_delete_app: Applic
         )
 
     teardown_delete_app.app_href = app.create_application.get_created_application_href()
+
     with allure.step('Проверка созданного приложения'):
         assert app.create_application.success_create_text(), 'Нет сообщения о успешном создании приложения'
         # assert app.create_application.download_cert_btn()
@@ -128,6 +129,7 @@ def test_revoke_certificate(app: ApplicationManager, create_and_delete_app: Appl
         app.app_certificate.revoke_certificate_click()
         app.app_certificate.select_another_reason_revoke_sert()
         app.app_certificate.submit_revoke()
+
     with allure.step('Проверка отозванного сертификата'):
         assert app.app_certificate.success_text_panel(), 'Нет сообщения "Сертификат успешно отозван"'
         assert app.app_certificate.is_status_cert_revoked(cert_id), \
@@ -159,7 +161,8 @@ def test_issue_new_certificate(app: ApplicationManager, create_and_delete_app: A
         app.app_certificate.issue_new_certificate_click()
         app.app_certificate.type_defaults_password()
         app.app_certificate.submit()
-    with allure.step('Проверка нового сертификата'):
+
+    with allure.step('Проверка заголовка о готовности сертификата'):
     # assert app.app_certificate_page.download_cert_btn()
         assert app.app_certificate.success_text_panel(), 'Нет сообщения "Сертификат готов"'
 
@@ -214,6 +217,7 @@ def test_delete_application(create_app, app):
         app.application_page.go_to_edit_application(app_instance)
     with allure.step('Удаление приложения'):
         app.edit_application.delete_application(app_instance)
+
     with allure.step('Проверка что приложение удалено'):
         assert app.profile.current_url() == app.profile._page_url, \
             'После удаления приложения не открылась страница профиля'
@@ -242,6 +246,7 @@ def test_subscription(app: ApplicationManager, create_and_delete_app: Applicatio
         app.subscription.select_tariff()
     with allure.step('Выбор приложения и оформление подписки'):
         app.subscription.select_app_from_list(app_name)
+
     with allure.step('Проверка оформленной подписки'):
         assert app.subscription.title_alert(), 'Нет сообщения "Подписка готова"'
 
@@ -262,10 +267,13 @@ def test_subscribing_and_creating_an_app(app: ApplicationManager, teardown_delet
         app.create_application.fill_form()
         app.subscription.subs_btn_next_click()
         app_name = app.subscription.get_name_app()
+
     with allure.step('Проверка созданного приложения'):
         assert app.subscription.title_alert(), 'Нет сообщений "Приложение создано" "Сертификат выпущен"'
+
     with allure.step('Оформление подписки'):
         app.subscription.subs_btn_next_click()
+
     with allure.step('Проверки созданного приложения и оформленной подписки'):
         assert app.subscription.title_alert(), 'Нет сообщения "Подписка готова"'
         client_id = app.create_application.client_id()
@@ -282,13 +290,13 @@ def test_subscribing_and_creating_an_app(app: ApplicationManager, teardown_delet
     teardown_delete_app.app_href = app.profile.get_app_href_by_name(app_name)
 
 
-def test_unsubscribe(app: ApplicationManager, subs_and_select_app: str, teardown_delete_app: Application):
+def test_unsubscribe(app: ApplicationManager, subscription_and_select_app, teardown_delete_app: Application):
     allure_labels(feature='Работа с приложениями',
                   story='Остановить подписку у созданного приложения во время оформления подписки',
                   title='Успешная отписка от продукта')
-    app_href = subs_and_select_app
+    app_href = subscription_and_select_app
     with allure.step('Открыть созданное приложение'):
-        app.profile.open_create_subs_application(app_href)
+        app.profile.open_created_app_during_subscription(app_href)
     with allure.step('Переход в карточку продукта'):
         app.create_application.product_card_click()
     with allure.step('Отписка от продукта'):
