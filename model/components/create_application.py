@@ -26,7 +26,7 @@ class CreateApplication(BaseDriver):
     _CLIENT_SECRET = '#clientSecretGetNew__key'
     _DOWNLOAD_CERT = '[name=download_cert]'
     _KEY_SHOW_BTN = '.clientSecret__key-show-btn'
-    _NAME_APP = '.title__value'
+    _PRODUCT_CARD = '.appCard'
 
     def __init__(self, driver: WebDriver, config: StandConfig):
         self._page_url = f'{config.urls.base_url}/profile/{config.users.developer.space}/app/create'
@@ -109,8 +109,6 @@ class CreateApplication(BaseDriver):
     def show_client_secret_btn_click(self) -> None:
         self.wait_element(self._KEY_SHOW_BTN).click()
 
-    def open_the_created_app(self, app_href: str) -> None:
-        return self.wait_element(app_href).click()
+    def product_card_click(self) -> None:
+        self.wait_element(self._PRODUCT_CARD).click()
 
-    def name_app(self) -> str:
-        return self.wait_element(self._NAME_APP).text

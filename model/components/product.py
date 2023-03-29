@@ -9,6 +9,9 @@ class Product(BaseDriver):
     OFFER_TEXT = '.offer__text'
     PRODUCT_TITLE = '.offer__title'
     SECTION_CARD = '.section-card'
+    _TARIFF_SELECTION = '.radioBtn-checkmark'
+    _BTN_NEXT = '.subsBtn-next'
+    _STOP_SUBS = '.product-card__sidebar-data > a'
     TOKEN_HREF = 'a[href$="/swagger/download_token_3_0_0"]'
 
     def __init__(self, driver: WebDriver):
@@ -23,10 +26,14 @@ class Product(BaseDriver):
     def section_card(self) -> WebElement:
         return self.wait_element(self.SECTION_CARD)
 
-    # def token_href(self) -> WebElement:
-    #     return self.wait_element(self.TOKEN_HREF)
-
     def go_to_token_swagger(self) -> None:
         self.wait_element(self.TOKEN_HREF).click()
+
+    def stop_subs_click(self) -> None:
+        self.wait_element(self._STOP_SUBS).click()
+
+
+
+
 
 

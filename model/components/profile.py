@@ -35,3 +35,6 @@ class Profile(BaseDriver):
 
     def get_app_href_by_name(self, app_name) -> str:
         return self.wait_element(f'//div[contains(text(),"{app_name}")]/parent::a', by=By.XPATH).get_attribute('href')
+
+    def open_created_app_during_subscription(self, app_href) -> None:
+        self.wait_element(f'a[href="{app_href}"]').click()

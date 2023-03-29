@@ -15,7 +15,6 @@ class Catalog(BaseDriver):
     GROUP_CARDS = '.catalog__cards'
     CARD_TITLE = '.card-title'
     _PRODUCT = '[href="/product/prodCode002st9007"]'
-    # PRODUCT_CODE = 'data-properties-product'
 
     def __init__(self, driver: WebDriver):
         super().__init__(driver)
@@ -57,15 +56,10 @@ class Catalog(BaseDriver):
     def random_product_card(self) -> WebElement:
         return random.choice(self.all_cards())
 
-    def go_to_product(self) -> None:
+    def select_product(self) -> None:
         self.wait_element(self._PRODUCT).click()
         pass
 
-    # def product_code(self, product: WebElement) -> str:
-    #     return product.get_attribute('data-properties-product')
-    #
-    # def card(self, product: WebElement, product_code: str):
-    #     return self.wait_element()
 
 
 
